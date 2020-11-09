@@ -1,0 +1,255 @@
+
+Gurobi 8.1.0 (win64, Python) logging started 11/08/20 16:55:39
+
+Academic license - for non-commercial use only
+
+Gurobi 8.1.0 (win64, Python) logging started 11/08/20 16:56:10
+
+Academic license - for non-commercial use only
+
+Gurobi 8.1.0 (win64, Python) logging started 11/08/20 17:14:07
+
+Academic license - for non-commercial use only
+
+Gurobi 8.1.0 (win64, Python) logging started 11/08/20 17:20:52
+
+Academic license - for non-commercial use only
+
+Gurobi 8.1.0 (win64, Python) logging started 11/08/20 17:22:03
+
+Academic license - for non-commercial use only
+
+Gurobi 8.1.0 (win64, Python) logging started 11/08/20 17:22:45
+
+Academic license - for non-commercial use only
+
+Gurobi 8.1.0 (win64, Python) logging started 11/08/20 17:28:08
+
+Academic license - for non-commercial use only
+
+Gurobi 8.1.0 (win64, Python) logging started 11/08/20 17:44:05
+
+Academic license - for non-commercial use only
+
+Gurobi 8.1.0 (win64, Python) logging started 11/08/20 17:47:06
+
+Academic license - for non-commercial use only
+
+Gurobi 8.1.0 (win64, Python) logging started 11/08/20 17:47:54
+
+Academic license - for non-commercial use only
+
+Gurobi 8.1.0 (win64, Python) logging started 11/08/20 17:56:37
+
+Academic license - for non-commercial use only
+
+Gurobi 8.1.0 (win64, Python) logging started 11/08/20 17:57:59
+
+Academic license - for non-commercial use only
+
+Gurobi 8.1.0 (win64, Python) logging started 11/08/20 17:59:31
+
+Academic license - for non-commercial use only
+
+Gurobi 8.1.0 (win64, Python) logging started 11/08/20 17:59:54
+
+Academic license - for non-commercial use only
+
+Gurobi 8.1.0 (win64, Python) logging started 11/08/20 18:00:18
+
+Academic license - for non-commercial use only
+
+Gurobi 8.1.0 (win64, Python) logging started 11/08/20 18:01:15
+
+Academic license - for non-commercial use only
+
+Gurobi 8.1.0 (win64, Python) logging started 11/08/20 18:01:25
+
+Academic license - for non-commercial use only
+
+Gurobi 8.1.0 (win64, Python) logging started 11/08/20 18:02:44
+
+Academic license - for non-commercial use only
+
+Gurobi 8.1.0 (win64, Python) logging started 11/08/20 18:02:55
+
+Academic license - for non-commercial use only
+
+Gurobi 8.1.0 (win64, Python) logging started 11/08/20 18:03:35
+
+Academic license - for non-commercial use only
+
+Gurobi 8.1.0 (win64, Python) logging started 11/08/20 18:10:10
+
+Academic license - for non-commercial use only
+
+Gurobi 8.1.0 (win64, Python) logging started 11/08/20 18:14:16
+
+Academic license - for non-commercial use only
+
+Gurobi 8.1.0 (win64, Python) logging started 11/08/20 18:14:54
+
+Academic license - for non-commercial use only
+
+Gurobi 8.1.0 (win64, Python) logging started 11/08/20 18:17:04
+
+Academic license - for non-commercial use only
+Optimize a model with 13 rows, 5 columns and 17 nonzeros
+Coefficient statistics:
+  Matrix range     [2e-01, 1e+00]
+  Objective range  [0e+00, 0e+00]
+  Bounds range     [4e+01, 6e+02]
+  RHS range        [2e+02, 1e+03]
+Presolve removed 12 rows and 5 columns
+Presolve time: 0.01s
+
+Solved in 0 iterations and 0.01 seconds
+Infeasible model
+
+Gurobi 8.1.0 (win64, Python) logging started 11/08/20 18:17:12
+
+Academic license - for non-commercial use only
+Optimize a model with 13 rows, 5 columns and 17 nonzeros
+Coefficient statistics:
+  Matrix range     [2e-01, 1e+00]
+  Objective range  [0e+00, 0e+00]
+  Bounds range     [4e+01, 6e+02]
+  RHS range        [2e+02, 1e+03]
+Presolve removed 12 rows and 5 columns
+Presolve time: 0.00s
+
+Solved in 0 iterations and 0.00 seconds
+Infeasible model
+Error: it isn't a multi-objective model
+Error: it isn't a multi-objective model
+
+Gurobi 8.1.0 (win64, Python) logging started 11/08/20 18:18:48
+
+Academic license - for non-commercial use only
+Optimize a model with 13 rows, 5 columns and 17 nonzeros
+Coefficient statistics:
+  Matrix range     [2e-01, 1e+00]
+  Objective range  [1e+01, 4e+01]
+  Bounds range     [4e+01, 6e+02]
+  RHS range        [2e+02, 1e+03]
+Presolve removed 12 rows and 3 columns
+Presolve time: 0.00s
+
+Solved in 0 iterations and 0.00 seconds
+Infeasible model
+Error: it isn't a multi-objective model
+Error: it isn't a multi-objective model
+Error: it isn't a multi-objective model
+Error: it isn't a multi-objective model
+Error: it isn't a multi-objective model
+No solution available
+Error: it isn't a multi-objective model
+No solution available
+Warning: variable name "Power generation0" has a space
+Warning: constraint name "TC p4" has a space
+Warning: to let Gurobi read it back, use rlp format
+
+Gurobi 8.1.0 (win64, Python) logging started 11/08/20 18:25:06
+
+Academic license - for non-commercial use only
+
+Gurobi 8.1.0 (win64, Python) logging started 11/08/20 18:25:51
+
+Academic license - for non-commercial use only
+Optimize a model with 13 rows, 5 columns and 53 nonzeros
+Coefficient statistics:
+  Matrix range     [2e-01, 1e+00]
+  Objective range  [1e+01, 4e+01]
+  Bounds range     [4e+01, 6e+02]
+  RHS range        [1e+02, 1e+09]
+Warning: Model contains large rhs
+         Consider reformulating model or setting NumericFocus parameter
+         to avoid numerical issues.
+Presolve removed 11 rows and 0 columns
+Presolve time: 0.01s
+Presolved: 2 rows, 5 columns, 9 nonzeros
+
+Iteration    Objective       Primal Inf.    Dual Inf.      Time
+       0    1.0000000e+04   3.273248e+02   0.000000e+00      0s
+       2    1.7479897e+04   0.000000e+00   0.000000e+00      0s
+
+Solved in 2 iterations and 0.01 seconds
+Optimal objective  1.747989693e+04
+
+Gurobi 8.1.0 (win64, Python) logging started 11/08/20 18:27:59
+
+Academic license - for non-commercial use only
+Optimize a model with 13 rows, 5 columns and 53 nonzeros
+Coefficient statistics:
+  Matrix range     [2e-01, 1e+00]
+  Objective range  [1e+01, 4e+01]
+  Bounds range     [4e+01, 6e+02]
+  RHS range        [1e+02, 1e+09]
+Warning: Model contains large rhs
+         Consider reformulating model or setting NumericFocus parameter
+         to avoid numerical issues.
+Presolve removed 11 rows and 0 columns
+Presolve time: 0.00s
+Presolved: 2 rows, 5 columns, 9 nonzeros
+
+Iteration    Objective       Primal Inf.    Dual Inf.      Time
+       0    1.0000000e+04   3.273248e+02   0.000000e+00      0s
+       2    1.7479897e+04   0.000000e+00   0.000000e+00      0s
+
+Solved in 2 iterations and 0.00 seconds
+Optimal objective  1.747989693e+04
+Warning: variable name "Power generation0" has a space
+Warning: constraint name "TC p4" has a space
+Warning: to let Gurobi read it back, use rlp format
+
+Gurobi 8.1.0 (win64, Python) logging started 11/08/20 18:32:35
+
+Academic license - for non-commercial use only
+Optimize a model with 13 rows, 5 columns and 53 nonzeros
+Coefficient statistics:
+  Matrix range     [2e-01, 1e+00]
+  Objective range  [1e+01, 4e+01]
+  Bounds range     [4e+01, 6e+02]
+  RHS range        [1e+02, 1e+09]
+Warning: Model contains large rhs
+         Consider reformulating model or setting NumericFocus parameter
+         to avoid numerical issues.
+Presolve removed 11 rows and 0 columns
+Presolve time: 0.00s
+Presolved: 2 rows, 5 columns, 9 nonzeros
+
+Iteration    Objective       Primal Inf.    Dual Inf.      Time
+       0    1.0000000e+04   3.273248e+02   0.000000e+00      0s
+       2    1.7479897e+04   0.000000e+00   0.000000e+00      0s
+
+Solved in 2 iterations and 0.00 seconds
+Optimal objective  1.747989693e+04
+Warning: variable name "Power generation0" has a space
+Warning: constraint name "TC p4" has a space
+Warning: to let Gurobi read it back, use rlp format
+
+Gurobi 8.1.0 (win64, Python) logging started 11/08/20 18:36:44
+
+Academic license - for non-commercial use only
+Optimize a model with 13 rows, 5 columns and 53 nonzeros
+Coefficient statistics:
+  Matrix range     [2e-01, 1e+00]
+  Objective range  [1e+01, 4e+01]
+  Bounds range     [4e+01, 6e+02]
+  RHS range        [1e+02, 1e+09]
+Warning: Model contains large rhs
+         Consider reformulating model or setting NumericFocus parameter
+         to avoid numerical issues.
+Presolve removed 11 rows and 0 columns
+Presolve time: 0.00s
+Presolved: 2 rows, 5 columns, 9 nonzeros
+
+Iteration    Objective       Primal Inf.    Dual Inf.      Time
+       0    1.0000000e+04   3.273248e+02   0.000000e+00      0s
+       2    1.7479897e+04   0.000000e+00   0.000000e+00      0s
+
+Solved in 2 iterations and 0.00 seconds
+Optimal objective  1.747989693e+04
+Warning: variable name "Power generation0" has a space
+Warning: constraint name "TC p4" has a space
+Warning: to let Gurobi read it back, use rlp format
