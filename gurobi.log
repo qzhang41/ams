@@ -749,3 +749,478 @@ Optimal objective  1.747989693e+04
 Warning: variable name "Power generation0" has a space
 Warning: constraint name "TC p0" has a space
 Warning: to let Gurobi read it back, use rlp format
+
+Gurobi 8.1.0 (win64, Python) logging started 11/15/20 20:57:57
+
+Academic license - for non-commercial use only
+Optimize a model with 13 rows, 5 columns and 53 nonzeros
+Coefficient statistics:
+  Matrix range     [2e-01, 1e+00]
+  Objective range  [1e+01, 4e+01]
+  Bounds range     [4e+01, 6e+02]
+  RHS range        [1e+02, 1e+09]
+Warning: Model contains large rhs
+         Consider reformulating model or setting NumericFocus parameter
+         to avoid numerical issues.
+Presolve removed 11 rows and 0 columns
+Presolve time: 0.00s
+Presolved: 2 rows, 5 columns, 9 nonzeros
+
+Iteration    Objective       Primal Inf.    Dual Inf.      Time
+       0    1.0000000e+04   3.273248e+02   0.000000e+00      0s
+       2    1.7479897e+04   0.000000e+00   0.000000e+00      0s
+
+Solved in 2 iterations and 0.00 seconds
+Optimal objective  1.747989693e+04
+Warning: variable name "Power generation0" has a space
+Warning: constraint name "TC p0" has a space
+Warning: to let Gurobi read it back, use rlp format
+
+Gurobi 8.1.0 (win64, Python) logging started 11/15/20 20:58:28
+
+Academic license - for non-commercial use only
+Optimize a model with 13 rows, 5 columns and 53 nonzeros
+Coefficient statistics:
+  Matrix range     [2e-01, 1e+00]
+  Objective range  [1e+01, 4e+01]
+  Bounds range     [4e+01, 6e+02]
+  RHS range        [1e+02, 1e+09]
+Warning: Model contains large rhs
+         Consider reformulating model or setting NumericFocus parameter
+         to avoid numerical issues.
+Presolve removed 11 rows and 0 columns
+Presolve time: 0.00s
+Presolved: 2 rows, 5 columns, 9 nonzeros
+
+Iteration    Objective       Primal Inf.    Dual Inf.      Time
+       0    1.0000000e+04   3.273248e+02   0.000000e+00      0s
+       2    1.7479897e+04   0.000000e+00   0.000000e+00      0s
+
+Solved in 2 iterations and 0.00 seconds
+Optimal objective  1.747989693e+04
+Warning: variable name "Power generation0" has a space
+Warning: constraint name "TC p0" has a space
+Warning: to let Gurobi read it back, use rlp format
+Error: it isn't a multi-objective model
+
+Gurobi 8.1.0 (win64, Python) logging started 11/15/20 21:06:46
+
+Academic license - for non-commercial use only
+Error: it isn't a multi-objective model
+Error: it isn't a multi-objective model
+Error: it isn't a multi-objective model
+Error: it isn't a multi-objective model
+Error: it isn't a multi-objective model
+No solution available
+Error: it isn't a multi-objective model
+No solution available
+Error: it isn't a multi-objective model
+Error: it isn't a multi-objective model
+Error: it isn't a multi-objective model
+Error: it isn't a multi-objective model
+Error: it isn't a multi-objective model
+No solution available
+Error: it isn't a multi-objective model
+No solution available
+Error: it isn't a multi-objective model
+Error: it isn't a multi-objective model
+Error: it isn't a multi-objective model
+Error: it isn't a multi-objective model
+Error: it isn't a multi-objective model
+No solution available
+Error: it isn't a multi-objective model
+No solution available
+Error: it isn't a multi-objective model
+Error: it isn't a multi-objective model
+Error: it isn't a multi-objective model
+Error: it isn't a multi-objective model
+Error: it isn't a multi-objective model
+No solution available
+Error: it isn't a multi-objective model
+No solution available
+Error: it isn't a multi-objective model
+Error: it isn't a multi-objective model
+Error: it isn't a multi-objective model
+Error: it isn't a multi-objective model
+Error: it isn't a multi-objective model
+No solution available
+Error: it isn't a multi-objective model
+No solution available
+
+Gurobi 8.1.0 (win64, Python) logging started 11/15/20 21:16:21
+
+Academic license - for non-commercial use only
+Optimize a model with 13 rows, 5 columns and 53 nonzeros
+Coefficient statistics:
+  Matrix range     [2e-01, 1e+00]
+  Objective range  [1e+01, 4e+01]
+  Bounds range     [4e+01, 6e+02]
+  RHS range        [1e+02, 1e+09]
+Warning: Model contains large rhs
+         Consider reformulating model or setting NumericFocus parameter
+         to avoid numerical issues.
+Presolve removed 11 rows and 0 columns
+Presolve time: 0.00s
+Presolved: 2 rows, 5 columns, 9 nonzeros
+
+Iteration    Objective       Primal Inf.    Dual Inf.      Time
+       0    1.0000000e+04   3.273248e+02   0.000000e+00      0s
+       2    1.7479897e+04   0.000000e+00   0.000000e+00      0s
+
+Solved in 2 iterations and 0.00 seconds
+Optimal objective  1.747989693e+04
+Warning: variable name "Power generation0" has a space
+Warning: constraint name "TC p0" has a space
+Warning: to let Gurobi read it back, use rlp format
+
+Gurobi 8.1.0 (win64, Python) logging started 11/15/20 21:55:29
+
+Academic license - for non-commercial use only
+Optimize a model with 13 rows, 5 columns and 53 nonzeros
+Coefficient statistics:
+  Matrix range     [2e-01, 1e+00]
+  Objective range  [1e+01, 4e+01]
+  Bounds range     [4e+01, 6e+02]
+  RHS range        [1e+02, 1e+09]
+Warning: Model contains large rhs
+         Consider reformulating model or setting NumericFocus parameter
+         to avoid numerical issues.
+Presolve removed 11 rows and 0 columns
+Presolve time: 0.00s
+Presolved: 2 rows, 5 columns, 9 nonzeros
+
+Iteration    Objective       Primal Inf.    Dual Inf.      Time
+       0    1.0000000e+04   3.273248e+02   0.000000e+00      0s
+       2    1.7479897e+04   0.000000e+00   0.000000e+00      0s
+
+Solved in 2 iterations and 0.00 seconds
+Optimal objective  1.747989693e+04
+Warning: variable name "Power generation0" has a space
+Warning: constraint name "TC p0" has a space
+Warning: to let Gurobi read it back, use rlp format
+
+Gurobi 8.1.0 (win64, Python) logging started 11/15/20 21:56:49
+
+Academic license - for non-commercial use only
+Optimize a model with 13 rows, 5 columns and 53 nonzeros
+Coefficient statistics:
+  Matrix range     [2e-01, 1e+00]
+  Objective range  [1e+01, 4e+01]
+  Bounds range     [4e+01, 6e+02]
+  RHS range        [1e+02, 1e+09]
+Warning: Model contains large rhs
+         Consider reformulating model or setting NumericFocus parameter
+         to avoid numerical issues.
+Presolve removed 11 rows and 0 columns
+Presolve time: 0.00s
+Presolved: 2 rows, 5 columns, 9 nonzeros
+
+Iteration    Objective       Primal Inf.    Dual Inf.      Time
+       0    1.0000000e+04   3.273248e+02   0.000000e+00      0s
+       2    1.7479897e+04   0.000000e+00   0.000000e+00      0s
+
+Solved in 2 iterations and 0.00 seconds
+Optimal objective  1.747989693e+04
+Warning: variable name "Power generation0" has a space
+Warning: constraint name "TC p0" has a space
+Warning: to let Gurobi read it back, use rlp format
+
+Gurobi 8.1.0 (win64, Python) logging started 11/15/20 21:57:22
+
+Academic license - for non-commercial use only
+Optimize a model with 13 rows, 5 columns and 53 nonzeros
+Coefficient statistics:
+  Matrix range     [2e-01, 1e+00]
+  Objective range  [1e+01, 4e+01]
+  Bounds range     [4e+01, 6e+02]
+  RHS range        [1e+02, 1e+09]
+Warning: Model contains large rhs
+         Consider reformulating model or setting NumericFocus parameter
+         to avoid numerical issues.
+Presolve removed 11 rows and 0 columns
+Presolve time: 0.00s
+Presolved: 2 rows, 5 columns, 9 nonzeros
+
+Iteration    Objective       Primal Inf.    Dual Inf.      Time
+       0    1.0000000e+04   3.273248e+02   0.000000e+00      0s
+       2    1.7479897e+04   0.000000e+00   0.000000e+00      0s
+
+Solved in 2 iterations and 0.00 seconds
+Optimal objective  1.747989693e+04
+Warning: variable name "Power generation0" has a space
+Warning: constraint name "TC p0" has a space
+Warning: to let Gurobi read it back, use rlp format
+
+Gurobi 8.1.0 (win64, Python) logging started 11/15/20 21:59:49
+
+Academic license - for non-commercial use only
+Optimize a model with 13 rows, 5 columns and 53 nonzeros
+Coefficient statistics:
+  Matrix range     [2e-01, 1e+00]
+  Objective range  [1e+01, 4e+01]
+  Bounds range     [4e+01, 6e+02]
+  RHS range        [1e+02, 1e+09]
+Warning: Model contains large rhs
+         Consider reformulating model or setting NumericFocus parameter
+         to avoid numerical issues.
+Presolve removed 11 rows and 0 columns
+Presolve time: 0.00s
+Presolved: 2 rows, 5 columns, 9 nonzeros
+
+Iteration    Objective       Primal Inf.    Dual Inf.      Time
+       0    1.0000000e+04   3.273248e+02   0.000000e+00      0s
+       2    1.7479897e+04   0.000000e+00   0.000000e+00      0s
+
+Solved in 2 iterations and 0.00 seconds
+Optimal objective  1.747989693e+04
+Warning: variable name "Power generation0" has a space
+Warning: constraint name "TC p0" has a space
+Warning: to let Gurobi read it back, use rlp format
+Optimize a model with 13 rows, 5 columns and 53 nonzeros
+Coefficient statistics:
+  Matrix range     [2e-01, 1e+00]
+  Objective range  [1e+01, 4e+01]
+  Bounds range     [4e+01, 6e+02]
+  RHS range        [3e+01, 1e+09]
+Warning: Model contains large rhs
+         Consider reformulating model or setting NumericFocus parameter
+         to avoid numerical issues.
+Presolve removed 11 rows and 1 columns
+Presolve time: 0.00s
+
+Solved in 0 iterations and 0.00 seconds
+Infeasible model
+Warning: variable name "Power generation0" has a space
+Warning: constraint name "TC p0" has a space
+Warning: to let Gurobi read it back, use rlp format
+
+Gurobi 8.1.0 (win64, Python) logging started 11/15/20 22:00:08
+
+Academic license - for non-commercial use only
+Optimize a model with 13 rows, 5 columns and 53 nonzeros
+Coefficient statistics:
+  Matrix range     [2e-01, 1e+00]
+  Objective range  [1e+01, 4e+01]
+  Bounds range     [4e+01, 6e+02]
+  RHS range        [1e+02, 1e+09]
+Warning: Model contains large rhs
+         Consider reformulating model or setting NumericFocus parameter
+         to avoid numerical issues.
+Presolve removed 11 rows and 0 columns
+Presolve time: 0.00s
+Presolved: 2 rows, 5 columns, 9 nonzeros
+
+Iteration    Objective       Primal Inf.    Dual Inf.      Time
+       0    1.0000000e+04   3.273248e+02   0.000000e+00      0s
+       2    1.7479897e+04   0.000000e+00   0.000000e+00      0s
+
+Solved in 2 iterations and 0.00 seconds
+Optimal objective  1.747989693e+04
+Warning: variable name "Power generation0" has a space
+Warning: constraint name "TC p0" has a space
+Warning: to let Gurobi read it back, use rlp format
+Optimize a model with 13 rows, 5 columns and 53 nonzeros
+Coefficient statistics:
+  Matrix range     [2e-01, 1e+00]
+  Objective range  [1e+01, 4e+01]
+  Bounds range     [4e+01, 6e+02]
+  RHS range        [3e+01, 1e+09]
+Warning: Model contains large rhs
+         Consider reformulating model or setting NumericFocus parameter
+         to avoid numerical issues.
+Presolve removed 11 rows and 1 columns
+Presolve time: 0.00s
+
+Solved in 0 iterations and 0.00 seconds
+Infeasible model
+Warning: variable name "Power generation0" has a space
+Warning: constraint name "TC p0" has a space
+Warning: to let Gurobi read it back, use rlp format
+
+Gurobi 8.1.0 (win64, Python) logging started 11/15/20 22:00:35
+
+Academic license - for non-commercial use only
+Optimize a model with 13 rows, 5 columns and 53 nonzeros
+Coefficient statistics:
+  Matrix range     [2e-01, 1e+00]
+  Objective range  [1e+01, 4e+01]
+  Bounds range     [4e+01, 6e+02]
+  RHS range        [1e+02, 1e+09]
+Warning: Model contains large rhs
+         Consider reformulating model or setting NumericFocus parameter
+         to avoid numerical issues.
+Presolve removed 11 rows and 0 columns
+Presolve time: 0.00s
+Presolved: 2 rows, 5 columns, 9 nonzeros
+
+Iteration    Objective       Primal Inf.    Dual Inf.      Time
+       0    1.0000000e+04   3.273248e+02   0.000000e+00      0s
+       2    1.7479897e+04   0.000000e+00   0.000000e+00      0s
+
+Solved in 2 iterations and 0.00 seconds
+Optimal objective  1.747989693e+04
+Warning: variable name "Power generation0" has a space
+Warning: constraint name "TC p0" has a space
+Warning: to let Gurobi read it back, use rlp format
+Optimize a model with 13 rows, 5 columns and 53 nonzeros
+Coefficient statistics:
+  Matrix range     [2e-01, 1e+00]
+  Objective range  [1e+01, 4e+01]
+  Bounds range     [4e+01, 6e+02]
+  RHS range        [3e+01, 1e+09]
+Warning: Model contains large rhs
+         Consider reformulating model or setting NumericFocus parameter
+         to avoid numerical issues.
+Presolve removed 11 rows and 1 columns
+Presolve time: 0.00s
+
+Solved in 0 iterations and 0.00 seconds
+Infeasible model
+Warning: variable name "Power generation0" has a space
+Warning: constraint name "TC p0" has a space
+Warning: to let Gurobi read it back, use rlp format
+
+Gurobi 8.1.0 (win64, Python) logging started 11/15/20 22:01:38
+
+Academic license - for non-commercial use only
+Optimize a model with 13 rows, 5 columns and 53 nonzeros
+Coefficient statistics:
+  Matrix range     [2e-01, 1e+00]
+  Objective range  [1e+01, 4e+01]
+  Bounds range     [4e+01, 6e+02]
+  RHS range        [1e+02, 1e+09]
+Warning: Model contains large rhs
+         Consider reformulating model or setting NumericFocus parameter
+         to avoid numerical issues.
+Presolve removed 11 rows and 0 columns
+Presolve time: 0.00s
+Presolved: 2 rows, 5 columns, 9 nonzeros
+
+Iteration    Objective       Primal Inf.    Dual Inf.      Time
+       0    1.0000000e+04   3.273248e+02   0.000000e+00      0s
+       2    1.7479897e+04   0.000000e+00   0.000000e+00      0s
+
+Solved in 2 iterations and 0.00 seconds
+Optimal objective  1.747989693e+04
+Warning: variable name "Power generation0" has a space
+Warning: constraint name "TC p0" has a space
+Warning: to let Gurobi read it back, use rlp format
+Optimize a model with 13 rows, 5 columns and 53 nonzeros
+Coefficient statistics:
+  Matrix range     [2e-01, 1e+00]
+  Objective range  [1e+01, 4e+01]
+  Bounds range     [4e+01, 6e+02]
+  RHS range        [1e+02, 1e+09]
+Warning: Model contains large rhs
+         Consider reformulating model or setting NumericFocus parameter
+         to avoid numerical issues.
+Presolve removed 11 rows and 0 columns
+Presolve time: 0.00s
+Presolved: 2 rows, 5 columns, 9 nonzeros
+
+Iteration    Objective       Primal Inf.    Dual Inf.      Time
+       0    8.9000000e+03   2.319191e+02   0.000000e+00      0s
+       2    1.3861729e+04   0.000000e+00   0.000000e+00      0s
+
+Solved in 2 iterations and 0.00 seconds
+Optimal objective  1.386172936e+04
+Warning: variable name "Power generation0" has a space
+Warning: constraint name "TC p0" has a space
+Warning: to let Gurobi read it back, use rlp format
+Optimize a model with 13 rows, 5 columns and 53 nonzeros
+Coefficient statistics:
+  Matrix range     [2e-01, 1e+00]
+  Objective range  [1e+01, 4e+01]
+  Bounds range     [4e+01, 6e+02]
+  RHS range        [2e+02, 1e+09]
+Warning: Model contains large rhs
+         Consider reformulating model or setting NumericFocus parameter
+         to avoid numerical issues.
+Presolve removed 11 rows and 0 columns
+Presolve time: 0.00s
+Presolved: 2 rows, 5 columns, 9 nonzeros
+
+Iteration    Objective       Primal Inf.    Dual Inf.      Time
+       0    5.4000000e+03   0.000000e+00   0.000000e+00      0s
+       0    5.4000000e+03   0.000000e+00   0.000000e+00      0s
+
+Solved in 0 iterations and 0.00 seconds
+Optimal objective  5.400000000e+03
+Warning: variable name "Power generation0" has a space
+Warning: constraint name "TC p0" has a space
+Warning: to let Gurobi read it back, use rlp format
+Optimize a model with 13 rows, 5 columns and 53 nonzeros
+Coefficient statistics:
+  Matrix range     [2e-01, 1e+00]
+  Objective range  [1e+01, 4e+01]
+  Bounds range     [4e+01, 6e+02]
+  RHS range        [2e+02, 1e+09]
+Warning: Model contains large rhs
+         Consider reformulating model or setting NumericFocus parameter
+         to avoid numerical issues.
+Presolve removed 11 rows and 0 columns
+Presolve time: 0.00s
+Presolved: 2 rows, 5 columns, 9 nonzeros
+
+Iteration    Objective       Primal Inf.    Dual Inf.      Time
+       0    5.2500000e+03   0.000000e+00   0.000000e+00      0s
+       0    5.2500000e+03   0.000000e+00   0.000000e+00      0s
+
+Solved in 0 iterations and 0.00 seconds
+Optimal objective  5.250000000e+03
+Warning: variable name "Power generation0" has a space
+Warning: constraint name "TC p0" has a space
+Warning: to let Gurobi read it back, use rlp format
+Optimize a model with 13 rows, 5 columns and 53 nonzeros
+Coefficient statistics:
+  Matrix range     [2e-01, 1e+00]
+  Objective range  [1e+01, 4e+01]
+  Bounds range     [4e+01, 6e+02]
+  RHS range        [2e+02, 1e+09]
+Warning: Model contains large rhs
+         Consider reformulating model or setting NumericFocus parameter
+         to avoid numerical issues.
+Presolve removed 11 rows and 0 columns
+Presolve time: 0.00s
+Presolved: 2 rows, 5 columns, 9 nonzeros
+
+Iteration    Objective       Primal Inf.    Dual Inf.      Time
+       0    5.0000000e+03   0.000000e+00   0.000000e+00      0s
+       0    5.0000000e+03   0.000000e+00   0.000000e+00      0s
+
+Solved in 0 iterations and 0.00 seconds
+Optimal objective  5.000000000e+03
+Warning: variable name "Power generation0" has a space
+Warning: constraint name "TC p0" has a space
+Warning: to let Gurobi read it back, use rlp format
+
+Gurobi 8.1.0 (win64, Python) logging started 11/15/20 22:02:12
+
+Academic license - for non-commercial use only
+Optimize a model with 13 rows, 5 columns and 53 nonzeros
+Coefficient statistics:
+  Matrix range     [2e-01, 1e+00]
+  Objective range  [1e+01, 4e+01]
+  Bounds range     [4e+01, 6e+02]
+  RHS range        [1e+02, 1e+09]
+Warning: Model contains large rhs
+         Consider reformulating model or setting NumericFocus parameter
+         to avoid numerical issues.
+Presolve removed 11 rows and 0 columns
+Presolve time: 0.00s
+Presolved: 2 rows, 5 columns, 9 nonzeros
+
+Iteration    Objective       Primal Inf.    Dual Inf.      Time
+       0    1.0000000e+04   3.273248e+02   0.000000e+00      0s
+       2    1.7479897e+04   0.000000e+00   0.000000e+00      0s
+
+Solved in 2 iterations and 0.00 seconds
+Optimal objective  1.747989693e+04
+Error: it isn't a multi-objective model
+Error: it isn't a multi-objective model
+Error: it isn't a multi-objective model
+Error: it isn't a multi-objective model
+Error: it isn't a multi-objective model
+No solution available
+Error: it isn't a multi-objective model
+No solution available

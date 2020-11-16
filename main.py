@@ -18,6 +18,7 @@ def Load_forecast(market):
     if sys.argv.__len__() > 2:
         load_profile = sys.argv[2]
         Input_Parse.read_load(market, load_profile)
+        market.Load_profile_flg = True
 
 
 if __name__ == '__main__':
@@ -26,6 +27,8 @@ if __name__ == '__main__':
     market_gateway(market)
     Load_forecast(market)
     # Dispatch
-    Core.Make_Bdc(market)
-    Core.Make_PTDF(market)
-    Core.Ecnomic_dispatch(market)
+    if market.Load_profile_flg:
+        Core.Multi_Ecnomic_dispatch(market)
+    else:
+        Core.Ecnomic_dispatch(market)
+    a = 1

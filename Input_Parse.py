@@ -203,4 +203,6 @@ def read_load(market, file):
     for idx, ld in enumerate(market.load):
         par_fac = factor[idx]/sum(factor)
         ld.T_P = [load_level[i]*par_fac for i in range(N_T)]
+    market.N_T = N_T
+    market.load_level = load_level
 

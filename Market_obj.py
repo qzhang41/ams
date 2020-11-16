@@ -14,7 +14,9 @@ class Market:
     Cft = []
     PTDF = []
     LMP = []
-
+    Load_profile_flg = False
+    T_LMP = []
+    load_level = []
 
 class Line:
     def __init__(self, market_type):
@@ -27,6 +29,7 @@ class Line:
     x = 0
     b = 0
     Opt_fl = 0
+    T_lf = []
 
 
 class Genco:
