@@ -163,7 +163,6 @@ def read_structure(market, file):
         market.Line.append(line)
         line_idx += 1
     market.Nl = line_idx
-
     return ret
 
 
@@ -196,8 +195,6 @@ def read_load(market, file):
             load_level.append(int(line))
         elif Title == "Factor":
             factor.append(int(line))
-    for ld in market.load:
-        a = 1
     # Read the load profile into market objective
     N_T = load_level.__len__()
     for idx, ld in enumerate(market.load):
@@ -205,4 +202,3 @@ def read_load(market, file):
         ld.T_P = [load_level[i]*par_fac for i in range(N_T)]
     market.N_T = N_T
     market.load_level = load_level
-

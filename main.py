@@ -31,4 +31,3 @@ if __name__ == '__main__':
         Core.Multi_Ecnomic_dispatch(market)
     else:
         Core.Ecnomic_dispatch(market)
-    a = 1

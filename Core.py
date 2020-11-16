@@ -110,7 +110,8 @@ def Multi_Ecnomic_dispatch(Market):
             for bus_idx in range(Market.Nb):
                 load = Market.load[bus_idx].T_P[t]
                 line_flow[line_idx] = line_flow[line_idx] + Market.PTDF[line_idx, bus_idx] * (-load)
-                line_flow[line_idx] = line_flow[line_idx] + Market.PTDF[line_idx, bus_idx] * sum([Pg[x] for x in sum(np.where(gen_bus == bus_idx + 1))])
+                line_flow[line_idx] = line_flow[line_idx] + Market.PTDF[line_idx, bus_idx] *\
+                                      sum([Pg[x] for x in sum(np.where(gen_bus == bus_idx + 1))])
             opt_model.addConstr(line_flow[line_idx] <= line.rating, name='TC p' + str(line_idx))
             opt_model.addConstr(line_flow[line_idx] >= -line.rating, name='TC n' + str(line_idx))
         # add power balance
@@ -124,7 +125,7 @@ def Multi_Ecnomic_dispatch(Market):
             for idx, gen in enumerate(Market.genco):
                 gen.T_Pg.append(Pg[idx].X)
             for idx, line in enumerate(Market.Line):
-                line.T_lf.append(line_flow[idx].getValue())
+                line.T_Lf.append(line_flow[idx].getValue())
             # LMP and dispatched settlements
             lamda = opt_model.getConstrByName('balance').Pi
             LMP = np.zeros([1, Market.Nb])
@@ -144,7 +145,7 @@ def Multi_Ecnomic_dispatch(Market):
                 gen.T_Pg.append([])
                 gen.T_Revenue.append([])
             for idx, line in enumerate(Market.Line):
-                line.T_lf.append([])
+                line.T_Lf.append([])
             for idx, ld in enumerate(Market.load):
                 ld.Revenue.append([])
             Market.T_LMP.append([])
