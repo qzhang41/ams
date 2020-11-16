@@ -5,7 +5,8 @@ import re
 import numpy as np
 import Market_obj as MO
 
-def read(market, file):
+
+def read_structure(market, file):
     """Read a MATPOWER data file and build market elements"""
     func = re.compile(r'function\s')
     mva = re.compile(r'\s*mpc.baseMVA\s*=\s*')
@@ -115,7 +116,7 @@ def read(market, file):
         if data[1] == 3:
             market.sw = data[0]
         market.load.append(load)
-    market.Nb = bus_idx
+    market.Nb = int(bus_idx)
 
     gen_idx = 0
     for data in mpc['gen']:
@@ -128,12 +129,12 @@ def read(market, file):
         gen_idx += 1
         market_type = market.Type
         gen = MO.Genco(market_type)
-        gen.bus = data[0]
-        gen.status = data[7]
+        gen.bus = int(data[0])
+        gen.status = int(data[7])
         gen.pmax = data[8]
         gen.pmin = data[9]
         market.genco.append(gen)
-    market.Ng = gen_idx
+    market.Ng = int(gen_idx)
 
     gen_idx = 0
     for data in mpc['gencost']:
@@ -149,8 +150,8 @@ def read(market, file):
         #   10       11       12    13  14  15  16
         market_type = market.Type
         line = MO.Line(market_type)
-        line.fbus = data[0]
-        line.tbus = data[1]
+        line.fbus = int(data[0])
+        line.tbus = int(data[1])
         line.r = data[2]
         line.x = data[3]
         line.b = data[4]
@@ -164,3 +165,42 @@ def read(market, file):
     market.Nl = line_idx
 
     return ret
+
+
+def read_load(market, file):
+    fid = open(file, 'r')
+    Read_Type = re.compile(r'\s*Type\s*=\s*')
+    Read_load_level = re.compile(r'\s*Load_level\s*=\s*')
+    Read_factor= re.compile(r'\s*Factor\s*=\s*')
+    load_level = []
+    factor = []
+    Title = " "
+    for line in fid:
+        line = line.strip().rstrip(';')
+        if line == "" or line == "\n":
+            continue
+        if Read_Type.search(line):
+            Title = "Type"
+        if Read_load_level.search(line):
+            Title = "Load level"
+            continue
+        if Read_factor.search(line):
+            Title = "Factor"
+            continue
+        # Switch "Title"  case ....
+        if line.find(']') >= 0:
+            Title = " "
+        if Title == "Type":
+            Type = line.split('=')[1]
+        elif Title == "Load level":
+            load_level.append(int(line))
+        elif Title == "Factor":
+            factor.append(int(line))
+    for ld in market.load:
+        a = 1
+    # Read the load profile into market objective
+    N_T = load_level.__len__()
+    for idx, ld in enumerate(market.load):
+        par_fac = factor[idx]/sum(factor)
+        ld.T_P = [load_level[i]*par_fac for i in range(N_T)]
+

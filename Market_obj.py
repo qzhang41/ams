@@ -13,6 +13,7 @@ class Market:
     Bf = []
     Cft = []
     PTDF = []
+    LMP = []
 
 
 class Line:
@@ -36,10 +37,19 @@ class Genco:
     pmax = 0
     pmin = 0
     status = 0
-    Opt_pg = 0
+    opt_pg = 0
+    Revenue = 0
+    # from load profile
+    T_Pg = []
+    T_Revenue = []
+
 
 
 class Load:
     def __init__(self, market_type):
         self.Type = market_type
     P = 0
+    Revenue = []
+    # from load profile
+    T_P = []
+    T_Revenue = []

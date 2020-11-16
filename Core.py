@@ -56,12 +56,12 @@ def Ecnomic_dispatch(Market):
             load = Market.load[bus_idx].P
             line_flow[line_idx] = line_flow[line_idx] + Market.PTDF[line_idx, bus_idx] * (-load)
             line_flow[line_idx] = line_flow[line_idx] + Market.PTDF[line_idx, bus_idx] * sum([Pg[x] for x in sum(np.where(gen_bus == bus_idx + 1))])
-        opt_model.addConstr(line_flow[line_idx] <= line.rating, name='TC p' + str(idx))
-        opt_model.addConstr(line_flow[line_idx] >= -line.rating, name='TC n' + str(idx))
+        opt_model.addConstr(line_flow[line_idx] <= line.rating, name='TC p' + str(line_idx))
+        opt_model.addConstr(line_flow[line_idx] >= -line.rating, name='TC n' + str(line_idx))
     # add power balance
     load_level = sum([np.sum(Market.load[i].P) for i in range(4)])
     gen_level = sum([np.sum(Pg[i]) for i in range(Market.Ng)])
-    opt_model.addConstr(gen_level == load_level)
+    opt_model.addConstr(gen_level == load_level, name="balance")
     opt_model.setObjective(obj, gb.GRB.MINIMIZE)
     opt_model.optimize()
     opt_model.write('math_model.lp')
@@ -69,3 +69,17 @@ def Ecnomic_dispatch(Market):
         gen.opt_pg = Pg[idx].X
     for idx, line in enumerate(Market.Line):
         line.opt_fl = line_flow[idx].getValue()
+    # LMP and dispatched settlements
+    lamda = opt_model.getConstrByName('balance').Pi
+    LMP = np.zeros([1, Market.Nb])
+    for b, ld in enumerate(Market.load):
+        LMP[0, b] = lamda
+        for l, line in enumerate(Market.Line):
+            ng = opt_model.getConstrByName('TC n' + str(l)).Pi
+            po = opt_model.getConstrByName('TC p' + str(l)).Pi
+            LMP[0, b] += Market.PTDF[l, b]*(ng-po)
+    Market.LMP = LMP
+    for gen in Market.genco:
+        gen.Revenue = Market.LMP[0, int(gen.bus-1)]*gen.opt_pg
+    for idx, ld in enumerate(Market.load):
+        ld.Revenue = -Market.LMP[0, idx]*ld.P
