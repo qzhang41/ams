@@ -17,6 +17,7 @@ class Market:
         self.Load_profile_flg = False
         self.T_LMP = []
         self.load_level = []
+        self.action = []
 
 
 class Line:
