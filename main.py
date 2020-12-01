@@ -40,7 +40,7 @@ if __name__ == '__main__':
         market_gateway(market, args['Unit Commitment'])
         if bool(args['Load Profile']):
             Load_forecast(market, args['Load Profile'])
-            Core.Multi_Ecnomic_dispatch(market)
+            Core.Unit_commitment(market)
         else:
             Core.Ecnomic_dispatch(market)
 

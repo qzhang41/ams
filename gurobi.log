@@ -2100,3 +2100,7 @@ Optimal objective  4.250000000e+03
 Warning: variable name "Power generation0" has a space
 Warning: constraint name "TC p0" has a space
 Warning: to let Gurobi read it back, use rlp format
+
+Gurobi 8.1.0 (win64, Python) logging started 11/30/20 16:13:48
+
+Academic license - for non-commercial use only
