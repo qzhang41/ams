@@ -18,6 +18,7 @@ class Market:
         self.T_LMP = []
         self.load_level = []
         self.action = []
+        self.UC_result = []
 
 
 class Line:
@@ -44,12 +45,16 @@ class Genco:
         self.status = 0
         self.opt_pg = 0
         self.Revenue = 0
-        self.T_start_up = []
+        self.start_up = 0
+        self.shut_down = 0
+        self.ramp_up = 0
+        self.ramp_down = 0
+        self.ramp_up_price = 0
+        self.ramp_down_price = 0
+        self.commit_key = 0
+        self.min_dowm = 0
+        self.min_up = 0
         self.T_no_load = []
-        self.T_down_time = []
-        self.T_up_time = []
-        self.T_ramp_up = [] # ramp size T
-        self.T_ramp_down = []
         self.T_Pg = []
         self.T_status = []
         self.T_Revenue = []

@@ -136,13 +136,17 @@ def read_structure(market, file):
         gen.status = int(data[7])
         gen.pmax = data[8]
         gen.pmin = data[9]
+        gen.ramp_up = data[18]*2
+        gen.ramp_down = data[18] * 2
         market.genco.append(gen)
     market.Ng = int(gen_idx)
 
     gen_idx = 0
     for data in mpc['gencost']:
-        # idx	startup	shutdown  n a	b	c
+        # idx	startup	shutdown  ~ a	b	c
         market.genco[gen_idx].bids = data[4]
+        market.genco[gen_idx].start_up = data[1]
+        market.genco[gen_idx].shut_down = data[2]
         gen_idx += 1
 
     line_idx = 0
@@ -195,9 +199,9 @@ def read_load(market, file):
         if Title == "Type":
             Type = line.split('=')[1]
         elif Title == "Load level":
-            load_level.append(int(line))
+            load_level.append(float(line))
         elif Title == "Factor":
-            factor.append(int(line))
+            factor.append(float(line))
     # Read the load profile into market objective
     N_T = load_level.__len__()
     for idx, ld in enumerate(market.load):
@@ -205,3 +209,33 @@ def read_load(market, file):
         ld.T_P = [load_level[i]*par_fac for i in range(N_T)]
     market.N_T = N_T
     market.load_level = load_level
+
+
+def read_xgd(market, file):
+    fid = open(file, 'r')
+    Read_factor= re.compile(r'\s*xgd_table.data\s*=\s*')
+    CommitKey = []
+    MinUp = []
+    MinDown = []
+    Title = " "
+    for line in fid:
+        line = line.strip().rstrip(';')
+        if line == "" or line == "\n":
+            continue
+        if Read_factor.search(line):
+            Title = "xgd_table.data"
+            continue
+        # Switch "Title"  case ....
+        if line.find(']') >= 0:
+            Title = " "
+        if Title == "xgd_table.data":
+            line = line.split(' ')
+            line = [x for x in line if x]
+            CommitKey.append(int(line[0]))
+            MinUp.append(int(line[2]))
+            MinDown.append(int(line[3]))
+    # Read the load profile into market objective
+    for idx, gen in enumerate(market.genco):
+        gen.commit_key = CommitKey[idx]
+        gen.min_dowm = MinDown[idx]
+        gen.min_up = MinUp[idx]
