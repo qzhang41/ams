@@ -4,17 +4,9 @@
 # Press Double Shift to search everywhere for classes, files, tool windows, actions, and settings.
 # Qiwei Zhang
 import argparse
-import Input_Parse
-import Market_obj as MO
-import Core
-
-
-def market_gateway(market, Topo):
-    Input_Parse.read_structure(market, Topo)
-
-def Load_forecast(market, load_profile):
-    Input_Parse.read_load(market, load_profile)
-    market.Load_profile_flg = True
+import input_Parse
+import market_obj as MO
+import core
 
 
 if __name__ == '__main__':
@@ -24,26 +16,40 @@ if __name__ == '__main__':
     parser.add_argument('-L', '--Load Profile', help='Input Load Profile')
     parser.add_argument('-UC', '--Unit Commitment', help='Perform Unit commitment')
     parser.add_argument('-xgd', '--UC gen data', help='Input gen Profile')
-    parser.add_argument('-WM', '--Whole Market-clearing', help='Perform Whole Market-clearing')
+    parser.add_argument('-DM', '--Day ahead market', help='Perform Whole UC+ED')
     args = parser.parse_args()
     args = vars(args)
     # Bid/Post system
-    market = MO.Market('RT')
+    market = MO.Market('run UC ED')
     if bool(args['Economic Dispatch']):
-        market_gateway(market, args['Economic Dispatch'])
+        input_Parse.read_structure(market, args['Economic Dispatch'])
         if bool(args['Load Profile']):
-            Load_forecast(market, args['Load Profile'])
-            Core.Multi_Ecnomic_dispatch(market)
+            input_Parse.read_load(market, args['Load Profile'])
+            market.Load_profile_flg = True
+            core.multi_ED(market)
         else:
-            Core.Ecnomic_dispatch(market)
+            core.ecnomic_dispatch(market)
     if bool(args['Unit Commitment']):
-        market_gateway(market, args['Unit Commitment'])
-        if bool(args['UC gen data']):
-            Input_Parse.read_xgd(market, args['UC gen data'])
-        if bool(args['Load Profile']):
-            Load_forecast(market, args['Load Profile'])
-            Core.Unit_commitment(market)
+        input_Parse.read_structure(market, args['Unit Commitment'])
+        try:
+            input_Parse.read_xgd(market, args['UC gen data'])
+            input_Parse.read_load(market, args['Load Profile'])
+        except:
+            print("Error: fail to load xgd and load file")
         else:
-            Core.Ecnomic_dispatch(market)
-
-
+            print("xgd and load file loaded")
+            market.Load_profile_flg = True
+            core.unit_commitment(market)
+    if bool(args['Day ahead market']):
+        input_Parse.read_structure(market, args['Day ahead market'])
+        try:
+            input_Parse.read_xgd(market, args['UC gen data'])
+            input_Parse.read_load(market, args['Load Profile'])
+        except:
+            print("Error: fail to load xgd and load file")
+        else:
+            print("xgd and load file loaded")
+            market.Load_profile_flg = True
+            core.unit_commitment(market)
+            core.multi_ED(market)
+            a = 1

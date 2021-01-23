@@ -18,7 +18,7 @@ class Market:
         self.T_LMP = []
         self.load_level = []
         self.action = []
-        self.UC_result = []
+        self.UC_result = 0
 
 
 class Line:
@@ -44,7 +44,7 @@ class Genco:
         self.pmin = 0
         self.status = 0
         self.opt_pg = 0
-        self.Revenue = 0
+        self.revenue = 0
         self.start_up = 0
         self.shut_down = 0
         self.ramp_up = 0
@@ -55,15 +55,15 @@ class Genco:
         self.min_dowm = 0
         self.min_up = 0
         self.T_no_load = []
-        self.T_Pg = []
+        self.T_pg = []
         self.T_status = []
-        self.T_Revenue = []
+        self.T_revenue = []
 
 
 class Load:
     def __init__(self, market_type):
         self.Type = market_type
         self.P = 0
-        self.Revenue = []
+        self.revenue = []
         self.T_P = []
-        self.T_Revenue = []
+        self.T_revenue = []

@@ -6,7 +6,7 @@ import numpy as np
 # import numpy.random.common
 # import numpy.random.bounded_integers
 # import numpy.random.entropy
-import Market_obj as MO
+import market_obj as MO
 
 
 def read_structure(market, file):
