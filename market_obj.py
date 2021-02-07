@@ -5,7 +5,6 @@ class Market:
         self.Ng = 0
         self.Nl = 0
         self.Nb = 0
-        self.GSF = []
         self.sw = 0
         self.genco = []
         self.Line = []

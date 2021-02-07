@@ -7,6 +7,7 @@ import argparse
 import input_Parse
 import market_obj as MO
 import core
+import vis_interface as vis
 
 
 if __name__ == '__main__':
@@ -52,4 +53,4 @@ if __name__ == '__main__':
             market.Load_profile_flg = True
             core.unit_commitment(market)
             core.multi_ED(market)
-            a = 1
+            vis.send_LMP(market)
