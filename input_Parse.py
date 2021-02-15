@@ -19,6 +19,7 @@ def read_structure(market, file):
     area = re.compile(r'\s*mpc.areas\s*=\s*\[')
     gencost = re.compile(r'\s*mpc.gencost\s*=\s*\[')
     bus_name = re.compile(r'\s*mpc.bus_name\s*=\s*{')
+    coordinates = re.compile(r'\s*mpc.coordinates\s*=\s*\[')
     end = re.compile(r'\s*\];?')
     has_digit = re.compile(r'.*\d+\s*]?;?')
 
@@ -34,6 +35,7 @@ def read_structure(market, file):
         'area': [],
         'gencost': [],
         'bus_name': [],
+        'coordinates': [],
     }
 
     fid = open(file, 'r')
@@ -65,6 +67,8 @@ def read_structure(market, file):
                 field = 'gencost'
             elif bus_name.search(line):
                 field = 'bus_name'
+            elif coordinates.search(line):
+                field = 'coordinates'
             else:
                 continue
         elif end.search(line):
@@ -108,6 +112,18 @@ def read_structure(market, file):
     # list of buses with slack gen
     sw = []
 
+    for data in mpc['bus_name']:
+        market_type = market.Type
+        Bus = MO.Bus(market_type)
+        Bus.name = data
+        market.bus.append(Bus)
+
+    bus_idx = 0
+    for data in mpc['coordinates']:
+        market.bus[bus_idx].latitude = data[0]
+        market.bus[bus_idx].longitude = data[1]
+        bus_idx += 1
+
     bus_idx = 0
     for data in mpc['bus']:
         # idx  ty   pd   qd  gs  bs  area  vmag  vang  baseKV  zone  vmax  vmin
@@ -119,6 +135,7 @@ def read_structure(market, file):
         if data[1] == 3:
             market.sw = data[0]
         market.load.append(load)
+
     market.Nb = int(bus_idx)
 
     gen_idx = 0

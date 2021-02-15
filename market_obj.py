@@ -1,6 +1,9 @@
+
+
 class Market:
     def __init__(self, market_type):
         self.Type = market_type
+        self.bus = []
         self.load = []
         self.Ng = 0
         self.Nl = 0
@@ -18,6 +21,15 @@ class Market:
         self.load_level = []
         self.action = []
         self.UC_result = 0
+        self.dime = False
+
+
+class Bus:
+    def __init__(self, market_type):
+        self.Type = market_type
+        self.name = ""
+        self.latitude = 0
+        self.longitude = 0
 
 
 class Line:

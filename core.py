@@ -139,6 +139,7 @@ def multi_ED(market):
                     ng = opt_model.getConstrByName('TC n' + str(l)).Pi
                     po = opt_model.getConstrByName('TC p' + str(l)).Pi
                     LMP[0, b] += market.PTDF[l, b]*(ng-po)
+            market.LMP = LMP
             market.T_LMP.append(LMP)
             for gen in market.genco:
                 gen.T_revenue.append(LMP[0, int(gen.bus-1)]*gen.T_pg[t])
@@ -153,6 +154,8 @@ def multi_ED(market):
             for idx, ld in enumerate(market.load):
                 ld.T_revenue.append([])
             market.T_LMP.append([])
+            market.LMP = []
+        market.streaming.send_LMP()
         del opt_model
 
 

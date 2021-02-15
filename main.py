@@ -7,7 +7,7 @@ import argparse
 import input_Parse
 import market_obj as MO
 import core
-import vis_interface as vis
+import streaming
 
 
 if __name__ == '__main__':
@@ -16,14 +16,22 @@ if __name__ == '__main__':
     parser.add_argument('-ED', '--Economic Dispatch', help='Perform Economic dispatch')
     parser.add_argument('-L', '--Load Profile', help='Input Load Profile')
     parser.add_argument('-UC', '--Unit Commitment', help='Perform Unit commitment')
-    parser.add_argument('-xgd', '--UC gen data', help='Input gen Profile')
+    parser.add_argument('-XGD', '--UC gen data', help='Input gen Profile')
     parser.add_argument('-DM', '--Day ahead market', help='Perform Whole UC+ED')
+    parser.add_argument('-DI', '--Dime', help='Send data to dime')
     args = parser.parse_args()
     args = vars(args)
     # Bid/Post system
     market = MO.Market('run UC ED')
+
+    if bool(args['Dime']):
+        market.dime = True
+        port = int(args['Dime'])
+        market.streaming = streaming.Streaming(market, port)
+
     if bool(args['Economic Dispatch']):
         input_Parse.read_structure(market, args['Economic Dispatch'])
+        market.streaming.send_init()
         if bool(args['Load Profile']):
             input_Parse.read_load(market, args['Load Profile'])
             market.Load_profile_flg = True
@@ -32,6 +40,7 @@ if __name__ == '__main__':
             core.ecnomic_dispatch(market)
     if bool(args['Unit Commitment']):
         input_Parse.read_structure(market, args['Unit Commitment'])
+        market.streaming.send_init()
         try:
             input_Parse.read_xgd(market, args['UC gen data'])
             input_Parse.read_load(market, args['Load Profile'])
@@ -43,6 +52,7 @@ if __name__ == '__main__':
             core.unit_commitment(market)
     if bool(args['Day ahead market']):
         input_Parse.read_structure(market, args['Day ahead market'])
+        market.streaming.send_init()
         try:
             input_Parse.read_xgd(market, args['UC gen data'])
             input_Parse.read_load(market, args['Load Profile'])
@@ -53,4 +63,4 @@ if __name__ == '__main__':
             market.Load_profile_flg = True
             core.unit_commitment(market)
             core.multi_ED(market)
-            vis.send_LMP(market)
+            market.streaming.finalize(market.streaming)
