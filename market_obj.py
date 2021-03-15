@@ -50,7 +50,8 @@ class Genco:
     def __init__(self, market_type):
         self.Type = market_type
         self.bus = 0
-        self.bids = 0
+        self.bids = []
+        self.bid_type = 2
         self.pmax = 0
         self.pmin = 0
         self.status = 0

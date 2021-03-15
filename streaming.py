@@ -19,7 +19,7 @@ class Streaming:
         self.SysParam = dict()
         self.LMP = dict()
         self.port = port
-        self.recipent = "Vis"
+        self.recipent = "geovis1"
 
     def connect(self):
         self.dimec = DimeClient("tcp", "localhost", self.port)
@@ -46,17 +46,17 @@ class Streaming:
             self.params_built = True
         t_sleep = 0.05
         self.dimec2 = DimeClient("tcp", "localhost", self.port)
-        self.dimec2.join("Vis")
+        # self.dimec2.join("Vis")
         sleep(t_sleep)
         self.dimec.send(self.recipent, "Bus")
         sleep(t_sleep)
-        self.dimec2.sync()
+        # self.dimec2.sync()
         self.dimec.send(self.recipent, "latitude")
         sleep(t_sleep)
-        self.dimec2.sync()
+        # self.dimec2.sync()
         self.dimec.send(self.recipent, "longitude")
         sleep(t_sleep)
-        self.dimec2.sync()
+        # self.dimec2.sync()
         sleep(t_sleep)
 
     def build_LMP(self):
@@ -69,8 +69,8 @@ class Streaming:
         sleep(0.05)
         self.dimec.send(self.recipent, "LMP")
         sleep(0.05)
-        self.dimec2.sync()
-        print(self.dimec2["LMP"])
+        # self.dimec2.sync()
+        # print(self.dimec2["LMP"])
 
     @staticmethod
     def finalize(self):

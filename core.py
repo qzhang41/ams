@@ -47,9 +47,13 @@ def ecnomic_dispatch(market):
     for idx, gen in enumerate(market.genco):
         gen_bus[idx] = gen.bus
         pg[idx] = opt_model.addVar(name='Power generation' + str(idx), vtype=gb.GRB.CONTINUOUS,
-                                   ub=gen.pmax, lb=gen.pmin)
-        cost = gen.bids
-        obj += pg[idx]*cost
+                                   ub=gen.pmax * gen.status, lb=gen.pmin * gen.status)
+        if gen.bid_type == 2:
+            cost = gen.bids
+            obj += pg[idx] * cost
+        elif gen.bid_type == 3:
+            cost = gen.bids
+            obj += (pg[idx] * pg[idx]) * cost[0] + pg[idx] * cost[1] + cost[2]
     # add line flow cons
     line_flow = {}
     for line_idx, line in enumerate(market.Line):

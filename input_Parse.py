@@ -161,7 +161,14 @@ def read_structure(market, file):
     gen_idx = 0
     for data in mpc['gencost']:
         # idx	startup	shutdown  ~ a	b	c
-        market.genco[gen_idx].bids = data[4]
+        if data[3] == 2:
+            # linear
+            market.genco[gen_idx].bid_type = 2
+            market.genco[gen_idx].bids = data[4]
+        elif data[3] == 3:
+            # quadratic
+            market.genco[gen_idx].bid_type = 3
+            market.genco[gen_idx].bids = [data[4], data[5], data[6],]
         market.genco[gen_idx].start_up = data[1]
         market.genco[gen_idx].shut_down = data[2]
         gen_idx += 1

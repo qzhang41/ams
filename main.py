@@ -31,7 +31,8 @@ if __name__ == '__main__':
 
     if bool(args['Economic Dispatch']):
         input_Parse.read_structure(market, args['Economic Dispatch'])
-        market.streaming.send_init()
+        if market.dime:
+            market.streaming.send_init()
         if bool(args['Load Profile']):
             input_Parse.read_load(market, args['Load Profile'])
             market.Load_profile_flg = True
