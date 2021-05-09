@@ -1,8 +1,7 @@
-# This is a sample Python script.
+# Python based power market clearing model
+# Author: Qiwei Zhang
 
-# Press Shift+F10 to execute it or replace it with your code.
-# Press Double Shift to search everywhere for classes, files, tool windows, actions, and settings.
-# Qiwei Zhang
+
 import argparse
 import input_Parse
 import market_obj as MO
@@ -18,6 +17,7 @@ if __name__ == '__main__':
     parser.add_argument('-UC', '--Unit Commitment', help='Perform Unit commitment')
     parser.add_argument('-XGD', '--UC gen data', help='Input gen Profile')
     parser.add_argument('-DM', '--Day ahead market', help='Perform Whole UC+ED')
+    parser.add_argument('-RT', '--Real time market', help='Perform Whole Ex_ante+Ex_post')
     parser.add_argument('-DI', '--Dime', help='Send data to dime')
     args = parser.parse_args()
     args = vars(args)
@@ -41,7 +41,8 @@ if __name__ == '__main__':
             core.ecnomic_dispatch(market)
     if bool(args['Unit Commitment']):
         input_Parse.read_structure(market, args['Unit Commitment'])
-        market.streaming.send_init()
+        if market.dime:
+            market.streaming.send_init()
         try:
             input_Parse.read_xgd(market, args['UC gen data'])
             input_Parse.read_load(market, args['Load Profile'])
@@ -53,7 +54,8 @@ if __name__ == '__main__':
             core.unit_commitment(market)
     if bool(args['Day ahead market']):
         input_Parse.read_structure(market, args['Day ahead market'])
-        market.streaming.send_init()
+        if market.dime:
+            market.streaming.send_init()
         try:
             input_Parse.read_xgd(market, args['UC gen data'])
             input_Parse.read_load(market, args['Load Profile'])
@@ -64,4 +66,10 @@ if __name__ == '__main__':
             market.Load_profile_flg = True
             core.unit_commitment(market)
             core.multi_ED(market)
-            market.streaming.finalize(market.streaming)
+            # market.streaming.finalize(market.streaming)
+    if bool(args['Real time market']):
+        input_Parse.read_structure(market, args['Real time market'])
+        input_Parse.read_load(market, args['Load Profile'])
+        market.Load_profile_flg = True
+        core.multi_ED(market)
+        core.real_time(market)

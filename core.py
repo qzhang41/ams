@@ -1,5 +1,6 @@
 import numpy as np
 import gurobipy as gb
+import Disturb as db
 
 
 def make_Bdc(market):
@@ -89,6 +90,7 @@ def ecnomic_dispatch(market):
         gen.revenue = market.LMP[0, int(gen.bus-1)]*gen.opt_pg
     for idx, ld in enumerate(market.load):
         ld.revenue = -market.LMP[0, idx]*ld.P
+    del opt_model
 
 
 def multi_ED(market):
@@ -159,7 +161,6 @@ def multi_ED(market):
                 ld.T_revenue.append([])
             market.T_LMP.append([])
             market.LMP = []
-        market.streaming.send_LMP()
         del opt_model
 
 
@@ -240,4 +241,89 @@ def unit_commitment(market):
         for t in range(market.N_T):
             gen.T_status.append(int(status[t, idx].x))
     market.UC_result = 1
+
+
+def real_time(market):
+    for t in range(market.N_T):
+        db.ex_ante_attack(market)
+        for bus_idx in range(market.Nb):
+            market.load[bus_idx].P = market.load[bus_idx].T_P[t]
+        ecnomic_dispatch(market)
+        P_cog_list = []
+        N_cog_list = []
+        for line_idx, line in enumerate(market.Line):
+            if abs(line.opt_fl - line.rating) <= 0.00001:
+                P_cog_list.append(line_idx)
+            if abs(line.opt_fl+line.rating) <= 0.00001:
+                N_cog_list.append(line_idx)
+        db.ex_post_attack(market)
+        d_pg_down = -2
+        d_pg_up = 0.01
+        opt_model = gb.Model(str(market.Type) + 'Ex_post_pricing')
+        pg = {}
+        obj = 0
+        gen_bus = np.zeros([len(market.genco), 1])
+        # add pg cap
+        for idx, gen in enumerate(market.genco):
+            gen_bus[idx] = gen.bus
+            if gen.opt_pg >= -d_pg_down:
+                pg[idx] = opt_model.addVar(name='Pg' + str(idx), vtype=gb.GRB.CONTINUOUS, lb=d_pg_down, ub=d_pg_up)
+            else:
+                pg[idx] = opt_model.addVar(name='Pg' + str(idx), vtype=gb.GRB.CONTINUOUS, lb=-gen.opt_pg, ub=d_pg_up)
+            cost = gen.bids
+            obj += pg[idx]*cost
+        # add line flow cons
+        line_flow = {}
+        for line_idx, line in enumerate(market.Line):
+            if line_idx in P_cog_list:
+                line_flow[line_idx] = 0
+                for bus_idx in range(market.Nb):
+                    line_flow[line_idx] = line_flow[line_idx] + market.PTDF[line_idx, bus_idx] *\
+                                          sum([pg[x] for x in sum(np.where(gen_bus == bus_idx + 1))])
+                opt_model.addConstr(line_flow[line_idx] <= 0, name='TC p' + str(line_idx))
+            if line_idx in N_cog_list:
+                line_flow[line_idx] = 0
+                for bus_idx in range(market.Nb):
+                    line_flow[line_idx] = line_flow[line_idx] + market.PTDF[line_idx, bus_idx] * \
+                                          sum([pg[x] for x in sum(np.where(gen_bus == bus_idx + 1))])
+                opt_model.addConstr(line_flow[line_idx] >= 0, name='TC n' + str(line_idx))
+        # add power balance
+        gen_level = sum([np.sum(pg[i]) for i in range(market.Ng)])
+        opt_model.addConstr(gen_level == 0, name="balance")
+        opt_model.setObjective(obj, gb.GRB.MINIMIZE)
+        opt_model.optimize()
+        if opt_model.Status == 2:
+            # LMP and dispatched settlements
+            lamda = opt_model.getConstrByName('balance').Pi
+            LMP = np.zeros([1, market.Nb])
+            for b, ld in enumerate(market.load):
+                LMP[0, b] = lamda
+                po = 0
+                ng = 0
+                for l, line in enumerate(market.Line):
+                    if l in P_cog_list:
+                        po = opt_model.getConstrByName('TC p' + str(l)).Pi
+                        LMP[0, b] += market.PTDF[l, b] * (-po)
+                    if l in N_cog_list:
+                        ng = opt_model.getConstrByName('TC n' + str(l)).Pi
+                        LMP[0, b] += market.PTDF[l, b] * ng
+            market.LMP = LMP
+            market.RT_LMP.append(LMP)
+            for gen in market.genco:
+                gen.T_revenue.append(LMP[0, int(gen.bus-1)]*gen.T_pg[t])
+            for idx, ld in enumerate(market.load):
+                ld.T_revenue.append(-LMP[0, idx]*ld.P)
+        else:
+            for idx, gen in enumerate(market.genco):
+                gen.T_pg.append([])
+                gen.T_revenue.append([])
+            for idx, line in enumerate(market.Line):
+                line.T_Lf.append([])
+            for idx, ld in enumerate(market.load):
+                ld.T_revenue.append([])
+            market.RT_LMP.append([])
+            market.LMP = []
+        del opt_model
+
+
 

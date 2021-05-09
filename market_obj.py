@@ -16,12 +16,15 @@ class Market:
         self.Cft = []
         self.PTDF = []
         self.LMP = []
+        self.RT_LMP = []
         self.Load_profile_flg = False
         self.T_LMP = []
         self.load_level = []
         self.action = []
         self.UC_result = 0
         self.dime = False
+        self.DA_rs = []
+        self.RT_LMP = []
 
 
 class Bus:
