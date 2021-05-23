@@ -202,37 +202,61 @@ def read_load(market, file):
     Read_Type = re.compile(r'\s*Type\s*=\s*')
     Read_load_level = re.compile(r'\s*Load_level\s*=\s*')
     Read_factor= re.compile(r'\s*Factor\s*=\s*')
-    load_level = []
-    factor = []
+    Read_load = re.compile(r'\s*Load\s*=\s*')
     Title = " "
     for line in fid:
         line = line.strip().rstrip(';')
-        if line == "" or line == "\n":
-            continue
         if Read_Type.search(line):
-            Title = "Type"
-        if Read_load_level.search(line):
-            Title = "Load level"
-            continue
-        if Read_factor.search(line):
-            Title = "Factor"
-            continue
-        # Switch "Title"  case ....
-        if line.find(']') >= 0:
-            Title = " "
-        if Title == "Type":
-            Type = line.split('=')[1]
-        elif Title == "Load level":
-            load_level.append(float(line))
-        elif Title == "Factor":
-            factor.append(float(line))
-    # Read the load profile into market objective
-    N_T = load_level.__len__()
-    for idx, ld in enumerate(market.load):
-        par_fac = factor[idx]/sum(factor)
-        ld.T_P = [load_level[i]*par_fac for i in range(N_T)]
-    market.N_T = N_T
-    market.load_level = load_level
+            Type = int(line.split('=')[1])
+    fid.close()
+    load = []
+    load_level = []
+    factor = []
+    if Type == 1:
+        fid = open(file, 'r')
+        for line in fid:
+            if Read_load.search(line):
+                Title = "Load"
+                continue
+            if line.find(']') >= 0:
+                Title = " "
+            elif Title == "Load":
+                load_txt = line.split()
+                load_float = [float(load_txt[i]) for i in range(load_txt.__len__())]
+                load.append(load_float)
+        N_T = load[0].__len__()
+        for idx, ld in enumerate(market.load):
+            ld.T_P = load[idx]
+        for i in range(N_T):
+            load_level.append(sum([load[x][i] for x in range(market.load.__len__())]))
+        market.N_T = N_T
+        market.load_level = load_level
+    if Type == 2:
+        fid = open(file, 'r')
+        for line in fid:
+            line = line.strip().rstrip(';')
+            if line == "" or line == "\n":
+                continue
+            if Read_load_level.search(line):
+                Title = "Load level"
+                continue
+            if Read_factor.search(line):
+                Title = "Factor"
+                continue
+            # Switch "Title"  case ....
+            if line.find(']') >= 0:
+                Title = " "
+            elif Title == "Load level":
+                load_level.append(float(line))
+            elif Title == "Factor":
+                factor.append(float(line))
+        # Read the load profile into market objective
+        N_T = load_level.__len__()
+        for idx, ld in enumerate(market.load):
+            par_fac = factor[idx]/sum(factor)
+            ld.T_P = [load_level[i]*par_fac for i in range(N_T)]
+        market.N_T = N_T
+        market.load_level = load_level
 
 
 def read_xgd(market, file):

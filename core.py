@@ -112,8 +112,12 @@ def multi_ED(market):
             else:
                 opt_model.addConstr(pg[idx] <= gen.pmax * gen.T_status[t], name='T_' + str(t) + 'Capacity_max' + str(idx))
                 opt_model.addConstr(pg[idx] >= gen.pmin * gen.T_status[t], name='T_' + str(t) + 'Capacity_min' + str(idx))
-            cost = gen.bids
-            obj += pg[idx]*cost
+            if gen.bid_type == 2:
+                cost = gen.bids
+                obj += pg[idx] * cost
+            elif gen.bid_type == 3:
+                cost = gen.bids
+                obj += (pg[idx] * pg[idx]) * cost[0] + pg[idx] * cost[1] + cost[2]
         # add line flow cons
         line_flow = {}
         for line_idx, line in enumerate(market.Line):
@@ -270,8 +274,12 @@ def real_time(market):
                 pg[idx] = opt_model.addVar(name='Pg' + str(idx), vtype=gb.GRB.CONTINUOUS, lb=d_pg_down, ub=d_pg_up)
             else:
                 pg[idx] = opt_model.addVar(name='Pg' + str(idx), vtype=gb.GRB.CONTINUOUS, lb=-gen.opt_pg, ub=d_pg_up)
-            cost = gen.bids
-            obj += pg[idx]*cost
+            if gen.bid_type == 2:
+                cost = gen.bids
+                obj += pg[idx] * cost
+            elif gen.bid_type == 3:
+                cost = gen.bids
+                obj += (pg[idx] * pg[idx]) * cost[0] + pg[idx] * cost[1] + cost[2]
         # add line flow cons
         line_flow = {}
         for line_idx, line in enumerate(market.Line):

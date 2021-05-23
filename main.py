@@ -73,3 +73,4 @@ if __name__ == '__main__':
         market.Load_profile_flg = True
         core.multi_ED(market)
         core.real_time(market)
+
