@@ -77,13 +77,13 @@ def ecnomic_dispatch(market):
         line.opt_fl = line_flow[idx].getValue()
     # LMP and dispatched settlements
     lamda = opt_model.getConstrByName('balance').Pi
-    LMP = np.zeros([1, market.Nb])
+    LMP = [0] * market.Nb
     for b, ld in enumerate(market.load):
-        LMP[0, b] = lamda
+        LMP[b] = lamda
         for l, line in enumerate(market.Line):
-            ng = opt_model.getConstrByName('TC n' + str(l)).Pi
-            po = opt_model.getConstrByName('TC p' + str(l)).Pi
-            LMP[0, b] += market.PTDF[l, b]*(ng-po)
+            ng = abs(opt_model.getConstrByName('TC n' + str(l)).Pi)
+            po = abs(opt_model.getConstrByName('TC p' + str(l)).Pi)
+            LMP[b] += market.PTDF[l, b]*(ng-po)
     market.LMP = LMP
     for gen in market.genco:
         gen.revenue = market.LMP[0, int(gen.bus-1)]*gen.opt_pg
