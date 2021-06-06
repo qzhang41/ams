@@ -59,11 +59,10 @@ def ecnomic_dispatch(market):
             obj += (pg[idx] * pg[idx]) * cost[0] + pg[idx] * cost[1] + cost[2]
     # add line flow cons
     opt_model.update()
-    line_flow = {}
-    for line_idx, line in enumerate(market.Line):
-        line_flow[line_idx] = sum([market.PTDF[line_idx, bus_idx] * (G[bus_idx] - market.load[bus_idx].P) for bus_idx in range(market.Nb)])
-        opt_model.addConstr(line_flow[line_idx] <= line.rating, name='TC p' + str(line_idx))
-        opt_model.addConstr(line_flow[line_idx] >= -line.rating, name='TC n' + str(line_idx))
+    line_flow = [sum([market.PTDF[line_idx, bus_idx] * (G[bus_idx] - market.load[bus_idx].P) for bus_idx in range(market.Nb)]) for line_idx in range(market.Line.__len__())]
+    pos_con = [opt_model.addConstr(line_flow[line_idx] <= market.Line[line_idx].rating, name='TC p' + str(line_idx)) for line_idx in range(market.Line.__len__())]
+    neg_con = [opt_model.addConstr(line_flow[line_idx] >= -market.Line[line_idx].rating, name='TC n' + str(line_idx)) for line_idx in range(market.Line.__len__())]
+    opt_model.update()
     # add power balance
     load_level = sum([np.sum(market.load[i].P) for i in range(market.load.__len__())])
     gen_level = sum([np.sum(pg[i]) for i in range(market.Ng)])
@@ -81,8 +80,8 @@ def ecnomic_dispatch(market):
     for b, ld in enumerate(market.load):
         LMP[b] = lamda
         for l, line in enumerate(market.Line):
-            ng = abs(opt_model.getConstrByName('TC n' + str(l)).Pi)
-            po = abs(opt_model.getConstrByName('TC p' + str(l)).Pi)
+            ng = abs(neg_con[l].Pi)
+            po = abs(pos_con[l].Pi)
             LMP[b] += market.PTDF[l, b]*(ng-po)
     market.LMP = LMP
     for gen in market.genco:
