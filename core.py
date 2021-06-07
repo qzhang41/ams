@@ -50,7 +50,7 @@ def ecnomic_dispatch(market):
         gen_bus[idx] = gen.bus
         pg[idx] = opt_model.addVar(name='Power generation' + str(idx), vtype=gb.GRB.CONTINUOUS,
                                    ub=gen.pmax * gen.status, lb=gen.pmin * gen.status)
-        G[gen.bus-1] = pg[idx]
+        G[gen.bus-1] = G[gen.bus-1] + pg[idx]
         if gen.bid_type == 2:
             cost = gen.bids
             obj += pg[idx] * cost
@@ -60,8 +60,8 @@ def ecnomic_dispatch(market):
     # add line flow cons
     opt_model.update()
     line_flow = [sum([market.PTDF[line_idx, bus_idx] * (G[bus_idx] - market.load[bus_idx].P) for bus_idx in range(market.Nb)]) for line_idx in range(market.Line.__len__())]
-    pos_con = [opt_model.addConstr(line_flow[line_idx] <= market.Line[line_idx].rating*1.3, name='TC p' + str(line_idx)) for line_idx in range(market.Line.__len__())]
-    neg_con = [opt_model.addConstr(line_flow[line_idx] >= -market.Line[line_idx].rating*1.3, name='TC n' + str(line_idx)) for line_idx in range(market.Line.__len__())]
+    pos_con = [opt_model.addConstr(line_flow[line_idx] <= market.Line[line_idx].rating, name='TC p' + str(line_idx)) for line_idx in range(market.Line.__len__())]
+    neg_con = [opt_model.addConstr(line_flow[line_idx] >= -market.Line[line_idx].rating, name='TC n' + str(line_idx)) for line_idx in range(market.Line.__len__())]
     opt_model.update()
     # add power balance
     load_level = sum([np.sum(market.load[i].P) for i in range(market.load.__len__())])
@@ -69,25 +69,19 @@ def ecnomic_dispatch(market):
     opt_model.addConstr(gen_level == load_level, name="balance")
     opt_model.setObjective(obj, gb.GRB.MINIMIZE)
     opt_model.optimize()
-    #opt_model.write('math_model.lp')
     for idx, gen in enumerate(market.genco):
         gen.opt_pg = pg[idx].X
     for idx, line in enumerate(market.Line):
         line.opt_fl = line_flow[idx].getValue()
     # LMP and dispatched settlements
     lamda = opt_model.getConstrByName('balance').Pi
-    LMP = [0] * market.Nb
-    for b, ld in enumerate(market.load):
-        LMP[b] = lamda
-        for l, line in enumerate(market.Line):
-            ng = abs(neg_con[l].Pi)
-            po = abs(pos_con[l].Pi)
-            LMP[b] += market.PTDF[l, b]*(ng-po)
+    LMP = [lamda + sum([market.PTDF[l, b]*(abs(neg_con[l].Pi)-abs(pos_con[l].Pi)) for l in range(market.Line.__len__())])
+           for b in range(market.Nb)]
     market.LMP = LMP
-    for gen in market.genco:
-        gen.revenue = market.LMP[0, int(gen.bus-1)]*gen.opt_pg
-    for idx, ld in enumerate(market.load):
-        ld.revenue = -market.LMP[0, idx]*ld.P
+    # for gen in market.genco:
+    #     gen.revenue = market.LMP[0, int(gen.bus-1)]*gen.opt_pg
+    # for idx, ld in enumerate(market.load):
+    #     ld.revenue = -market.LMP[0, idx]*ld.P
     del opt_model
 
 
