@@ -60,8 +60,8 @@ def ecnomic_dispatch(market):
     # add line flow cons
     opt_model.update()
     line_flow = [sum([market.PTDF[line_idx, bus_idx] * (G[bus_idx] - market.load[bus_idx].P) for bus_idx in range(market.Nb)]) for line_idx in range(market.Line.__len__())]
-    pos_con = [opt_model.addConstr(line_flow[line_idx] <= market.Line[line_idx].rating, name='TC p' + str(line_idx)) for line_idx in range(market.Line.__len__())]
-    neg_con = [opt_model.addConstr(line_flow[line_idx] >= -market.Line[line_idx].rating, name='TC n' + str(line_idx)) for line_idx in range(market.Line.__len__())]
+    pos_con = [opt_model.addConstr(line_flow[line_idx] <= market.Line[line_idx].rating*1.3, name='TC p' + str(line_idx)) for line_idx in range(market.Line.__len__())]
+    neg_con = [opt_model.addConstr(line_flow[line_idx] >= -market.Line[line_idx].rating*1.3, name='TC n' + str(line_idx)) for line_idx in range(market.Line.__len__())]
     opt_model.update()
     # add power balance
     load_level = sum([np.sum(market.load[i].P) for i in range(market.load.__len__())])
