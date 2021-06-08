@@ -42,7 +42,7 @@ def ecnomic_dispatch(market):
     opt_model = gb.Model(str(market.Type) + 'Ecnomic_dispatch')
     pg = {}
     load_level = 0
-    G = [0] * market.Nb
+    G = np.ndarray.astype(np.zeros([1, market.Nb]), object)
     obj = 0
     gen_bus = np.zeros([len(market.genco), 1])
     # add pg cap
@@ -50,7 +50,8 @@ def ecnomic_dispatch(market):
         gen_bus[idx] = gen.bus
         pg[idx] = opt_model.addVar(name='Power generation' + str(idx), vtype=gb.GRB.CONTINUOUS,
                                    ub=gen.pmax * gen.status, lb=gen.pmin * gen.status)
-        G[gen.bus-1] = G[gen.bus-1] + pg[idx]
+        opt_model.update()
+        G[0, gen_bus-1] = G[0, gen_bus-1] + pg[idx]
         if gen.bid_type == 2:
             cost = gen.bids
             obj += pg[idx] * cost
@@ -58,7 +59,6 @@ def ecnomic_dispatch(market):
             cost = gen.bids
             obj += (pg[idx] * pg[idx]) * cost[0] + pg[idx] * cost[1] + cost[2]
     # add line flow cons
-    opt_model.update()
     line_flow = [sum([market.PTDF[line_idx, bus_idx] * (G[bus_idx] - market.load[bus_idx].P) for bus_idx in range(market.Nb)]) for line_idx in range(market.Line.__len__())]
     pos_con = [opt_model.addConstr(line_flow[line_idx] <= market.Line[line_idx].rating, name='TC p' + str(line_idx)) for line_idx in range(market.Line.__len__())]
     neg_con = [opt_model.addConstr(line_flow[line_idx] >= -market.Line[line_idx].rating, name='TC n' + str(line_idx)) for line_idx in range(market.Line.__len__())]
