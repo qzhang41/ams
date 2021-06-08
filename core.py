@@ -43,6 +43,7 @@ def ecnomic_dispatch(market):
     pg = {}
     load_level = 0
     G = np.ndarray.astype(np.zeros([1, market.Nb]), object)
+    L = np.array([market.load[idx].P for idx in range(market.Nb)])
     obj = 0
     gen_bus = np.zeros([len(market.genco), 1])
     # add pg cap
@@ -51,7 +52,7 @@ def ecnomic_dispatch(market):
         pg[idx] = opt_model.addVar(name='Power generation' + str(idx), vtype=gb.GRB.CONTINUOUS,
                                    ub=gen.pmax * gen.status, lb=gen.pmin * gen.status)
         opt_model.update()
-        G[0, gen_bus-1] = G[0, gen_bus-1] + pg[idx]
+        G[0, gen.bus-1] = G[0, gen.bus-1] + pg[idx]
         if gen.bid_type == 2:
             cost = gen.bids
             obj += pg[idx] * cost
@@ -59,9 +60,9 @@ def ecnomic_dispatch(market):
             cost = gen.bids
             obj += (pg[idx] * pg[idx]) * cost[0] + pg[idx] * cost[1] + cost[2]
     # add line flow cons
-    line_flow = [sum([market.PTDF[line_idx, bus_idx] * (G[bus_idx] - market.load[bus_idx].P) for bus_idx in range(market.Nb)]) for line_idx in range(market.Line.__len__())]
-    pos_con = [opt_model.addConstr(line_flow[line_idx] <= market.Line[line_idx].rating, name='TC p' + str(line_idx)) for line_idx in range(market.Line.__len__())]
-    neg_con = [opt_model.addConstr(line_flow[line_idx] >= -market.Line[line_idx].rating, name='TC n' + str(line_idx)) for line_idx in range(market.Line.__len__())]
+    line_flow = np.matrix(market.PTDF) * np.matrix.transpose(np.matrix(G)-np.matrix(L))
+    pos_con = [opt_model.addConstr(line_flow[line_idx, 0] <= market.Line[line_idx].rating, name='TC p' + str(line_idx)) for line_idx in range(market.Line.__len__())]
+    neg_con = [opt_model.addConstr(line_flow[line_idx, 0] >= -market.Line[line_idx].rating, name='TC n' + str(line_idx)) for line_idx in range(market.Line.__len__())]
     opt_model.update()
     # add power balance
     load_level = sum([np.sum(market.load[i].P) for i in range(market.load.__len__())])
@@ -72,7 +73,7 @@ def ecnomic_dispatch(market):
     for idx, gen in enumerate(market.genco):
         gen.opt_pg = pg[idx].X
     for idx, line in enumerate(market.Line):
-        line.opt_fl = line_flow[idx].getValue()
+        line.opt_fl = line_flow[idx, 0].getValue()
     # LMP and dispatched settlements
     lamda = opt_model.getConstrByName('balance').Pi
     LMP = [lamda + sum([market.PTDF[l, b]*(abs(neg_con[l].Pi)-abs(pos_con[l].Pi)) for l in range(market.Line.__len__())])
