@@ -58,7 +58,7 @@ def ecnomic_dispatch(market):
             cost = gen.bids
             obj += (pg[idx] * pg[idx]) * cost[0] + pg[idx] * cost[1] + cost[2]
     # add line flow cons
-    line_flow = np.matrix(market.PTDF) * np.matrix.transpose(np.matrix(G)-np.matrix(L))
+    line_flow = market.PTDF * np.matrix.transpose(G-np.matrix(L))
     pos_con = [opt_model.addConstrs(line_flow[line_idx, 0] <= market.Line[line_idx].rating for line_idx in range(market.Line.__len__()))]
     neg_con = [opt_model.addConstrs(line_flow[line_idx, 0] >= -market.Line[line_idx].rating for line_idx in range(market.Line.__len__()))]
     opt_model.update()
