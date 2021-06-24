@@ -52,8 +52,8 @@ def ecnomic_dispatch(market):
         opt_model.update()
         G[0, gen.bus-1] = G[0, gen.bus-1] + pg[idx]
         if gen.bid_type == 2:
-            cost = gen.bids
-            obj += pg[idx] * cost
+            cost = gen.bids[0]
+            obj += pg[idx] * cost + gen.bids[1]
         elif gen.bid_type == 3:
             cost = gen.bids
             obj += (pg[idx] * pg[idx]) * cost[0] + pg[idx] * cost[1] + cost[2]
@@ -157,6 +157,7 @@ def unit_commitment(market):
     make_Bdc(market)
     make_PTDF(market)
     opt_model = gb.Model(str(market.Type) + 'Unit Commitment')
+    opt_model.params.NonConvex = 2
     pg = {}
     status = {}
     comm_up = {}
@@ -165,9 +166,12 @@ def unit_commitment(market):
     for t in range(market.N_T):
         gen_bus = np.zeros([len(market.genco), 1])
         # add pg cap and obj
+        G = np.ndarray.astype(np.zeros([1, market.Nb]), object)
+        L = np.array([market.load[idx].T_P[t] for idx in range(market.Nb)])
         for idx, gen in enumerate(market.genco):
             gen_bus[idx] = gen.bus
             pg[t, idx] = opt_model.addVar(name='T_' + str(t) + 'P_g' + str(idx), vtype=gb.GRB.CONTINUOUS)
+            G[0, gen.bus - 1] = G[0, gen.bus - 1] + pg[t, idx]
             status[t, idx] = opt_model.addVar(name='T_' + str(t) + 'Status' + str(idx), vtype=gb.GRB.BINARY)
             comm_up[t, idx] = opt_model.addVar(name='T_' + str(t) + 'comm_up' + str(idx), vtype=gb.GRB.BINARY)
             comm_down[t, idx] = opt_model.addVar(name='T_' + str(t) + 'comm_down' + str(idx), vtype=gb.GRB.BINARY)
@@ -207,18 +211,20 @@ def unit_commitment(market):
             cost = gen.bids
             no_load_c = 0      #gen.T_no_load[t]
             start_up_c = 0     #gen.T_no_load[t]
-            obj += pg[t, idx]*cost+status[t, idx]*no_load_c+comm_up[t, idx]*gen.start_up+comm_down[t, idx]*gen.shut_down
+            if gen.bid_type == 2:
+                cost = gen.bids
+                obj += (pg[t, idx] * cost[0] + cost[1])*status[t, idx] + status[t, idx]*no_load_c+comm_up[t, idx]*gen.start_up+comm_down[t, idx]*gen.shut_down
+            elif gen.bid_type == 3:
+                cost = gen.bids
+                pg2 = opt_model.addVar(lb=0,vtype=gb.GRB.CONTINUOUS)
+                opt_model.addConstr(pg2 == pg[t, idx]*pg[t, idx])
+                obj += (pg2 * cost[0] + pg[t, idx] * cost[1] + cost[2])*status[t, idx]+status[t, idx]*no_load_c+comm_up[t, idx]*gen.start_up+comm_down[t, idx]*gen.shut_down
         # add line flow cons
-        line_flow = {}
-        for line_idx, line in enumerate(market.Line):
-            line_flow[t, line_idx] = 0
-            for bus_idx in range(market.Nb):
-                load = market.load[bus_idx].T_P[t]
-                line_flow[t, line_idx] = line_flow[t, line_idx] + market.PTDF[line_idx, bus_idx] * (-load)
-                line_flow[t, line_idx] = line_flow[t, line_idx] + market.PTDF[line_idx, bus_idx] *\
-                                      sum([pg[t, x] for x in sum(np.where(gen_bus == bus_idx + 1))])
-            opt_model.addConstr(line_flow[t, line_idx] <= line.rating, name='T_' + str(t) + 'TC_p' + str(line_idx))
-            opt_model.addConstr(line_flow[t, line_idx] >= -line.rating, name='T_' + str(t) + 'TC_n' + str(line_idx))
+        line_flow = market.PTDF * np.matrix.transpose(G - np.matrix(L))
+        pos_con = [opt_model.addConstrs(
+            line_flow[line_idx, 0] <= market.Line[line_idx].rating for line_idx in range(market.Line.__len__()))]
+        neg_con = [opt_model.addConstrs(
+            line_flow[line_idx, 0] >= -market.Line[line_idx].rating for line_idx in range(market.Line.__len__()))]
         # add power balance
         load_level = market.load_level
         gen_level = sum([np.sum(pg[t, i]) for i in range(market.Ng)])

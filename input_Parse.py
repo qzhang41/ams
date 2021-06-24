@@ -164,7 +164,7 @@ def read_structure(market, file):
         if data[3] == 2:
             # linear
             market.genco[gen_idx].bid_type = 2
-            market.genco[gen_idx].bids = data[4]
+            market.genco[gen_idx].bids = [data[4], data[5]]
         elif data[3] == 3:
             # quadratic
             market.genco[gen_idx].bid_type = 3
