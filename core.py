@@ -1,6 +1,7 @@
 import numpy as np
 import gurobipy as gb
 import Disturb as db
+import data_output as ot
 
 
 def make_Bdc(market):
@@ -69,6 +70,8 @@ def ecnomic_dispatch(market):
     opt_model.setObjective(obj, gb.GRB.MINIMIZE)
     opt_model.optimize()
     # LMP and dispatched settlements
+    for i in range(market.genco.__len__()):
+        market.genco[i].opt_pg = pg[i].X
     lamda = opt_model.getConstrByName('balance').Pi
     LMP = np.ones([1, market.Nb]) * lamda
     gama = np.matrix([(abs(neg_con[0][l].Pi)-abs(pos_con[0][l].Pi)) for l in range(market.Line.__len__())])
@@ -76,7 +79,8 @@ def ecnomic_dispatch(market):
     LMP = LMP + d_LMP
     market.LMP = LMP
     del opt_model
-
+    if market.output == 1:
+        ot.Out_to_CSV(market)
 
 def multi_ED(market):
     make_Bdc(market)
@@ -235,8 +239,9 @@ def unit_commitment(market):
     for idx, gen in enumerate(market.genco):
         for t in range(market.N_T):
             gen.T_status.append(int(status[t, idx].x))
-    market.UC_result = 1
-
+            gen.T_pg.append(pg[t,idx].X)
+    if market.output == 1:
+        ot.Out_to_CSV(market)
 
 def real_time(market):
     for t in range(market.N_T):

@@ -22,14 +22,9 @@ if __name__ == '__main__':
     args = parser.parse_args()
     args = vars(args)
     # Bid/Post system
-    market = MO.Market('run UC ED')
-
-    if bool(args['Dime']):
-        market.dime = True
-        port = int(args['Dime'])
-        market.streaming = streaming.Streaming(market, port)
 
     if bool(args['Economic Dispatch']):
+        market = MO.Market('ED')
         input_Parse.read_structure(market, args['Economic Dispatch'])
         if market.dime:
             market.streaming.send_init()
@@ -40,6 +35,7 @@ if __name__ == '__main__':
         else:
             core.ecnomic_dispatch(market)
     if bool(args['Unit Commitment']):
+        market = MO.Market('UC')
         input_Parse.read_structure(market, args['Unit Commitment'])
         if market.dime:
             market.streaming.send_init()
@@ -53,6 +49,7 @@ if __name__ == '__main__':
             market.Load_profile_flg = True
             core.unit_commitment(market)
     if bool(args['Day ahead market']):
+        market = MO.Market('DA')
         input_Parse.read_structure(market, args['Day ahead market'])
         if market.dime:
             market.streaming.send_init()
@@ -68,9 +65,14 @@ if __name__ == '__main__':
             core.multi_ED(market)
             # market.streaming.finalize(market.streaming)
     if bool(args['Real time market']):
+        market = MO.Market('RT')
         input_Parse.read_structure(market, args['Real time market'])
         input_Parse.read_load(market, args['Load Profile'])
         market.Load_profile_flg = True
         core.multi_ED(market)
         core.real_time(market)
 
+    if bool(args['Dime']):
+        market.dime = True
+        port = int(args['Dime'])
+        market.streaming = streaming.Streaming(market, port)
