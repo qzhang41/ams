@@ -81,6 +81,8 @@ def ecnomic_dispatch(market):
     del opt_model
     if market.output == 1:
         ot.Out_to_CSV(market)
+    elif market.output == 2:
+        ot.Out_to_plot(market)
 
 def multi_ED(market):
     make_Bdc(market)
@@ -242,6 +244,8 @@ def unit_commitment(market):
             gen.T_pg.append(pg[t,idx].X)
     if market.output == 1:
         ot.Out_to_CSV(market)
+    elif market.output == 2:
+        ot.Out_to_plot(market)
 
 def real_time(market):
     for t in range(market.N_T):

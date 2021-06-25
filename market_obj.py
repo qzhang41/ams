@@ -25,7 +25,7 @@ class Market:
         self.dime = False
         self.DA_rs = []
         self.RT_LMP = []
-        self.output = 1
+        self.output = 0
 
 class Bus:
     def __init__(self, market_type):

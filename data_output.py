@@ -1,5 +1,6 @@
 import pandas as pd
 import numpy as np
+import matplotlib.pyplot as plt
 
 def Out_to_CSV(market):
     type = market.Type
@@ -29,3 +30,14 @@ def Out_to_CSV(market):
         frame_st.to_excel(writer, header=True, sheet_name='T_status')
         writer.save()
         writer.close()
+
+def Out_to_plot(market):
+    type = market.Type
+    if type == 'ED':
+        y = np.matrix.tolist(market.LMP)[0]
+        x = list(range(market.Nb))
+        plt.plot(x, y, color='r', marker='o', linestyle='dashed')
+        plt.ylabel('LMP ($)')
+        plt.xlabel('Bus')
+        plt.title('LMP plot')
+        plt.show()
