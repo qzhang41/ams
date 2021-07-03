@@ -19,12 +19,15 @@ if __name__ == '__main__':
     parser.add_argument('-DM', '--Day ahead market', help='Perform Whole UC+ED')
     parser.add_argument('-RT', '--Real time market', help='Perform Whole Ex_ante+Ex_post')
     parser.add_argument('-OUT', '--output', help='to csv or plot')
+    parser.add_argument('-PU', '--plot unit', help='plot unit')
     parser.add_argument('-DI', '--Dime', help='Send data to dime')
     args = parser.parse_args()
     args = vars(args)
     # Bid/Post system
     if bool(args['output']):
         output = args['output']
+        if bool(args['plot unit']):
+            plot_unit = args['plot unit']
     else:
         output = 0
     if bool(args['Economic Dispatch']):
@@ -42,6 +45,7 @@ if __name__ == '__main__':
     if bool(args['Unit Commitment']):
         market = MO.Market('UC')
         market.output = int(output)
+        market.p_unit = int(plot_unit)
         input_Parse.read_structure(market, args['Unit Commitment'])
         if market.dime:
             market.streaming.send_init()
@@ -57,6 +61,7 @@ if __name__ == '__main__':
     if bool(args['Day ahead market']):
         market = MO.Market('DA')
         market.output = int(output)
+        market.p_unit = int(plot_unit)
         input_Parse.read_structure(market, args['Day ahead market'])
         if market.dime:
             market.streaming.send_init()
@@ -74,6 +79,7 @@ if __name__ == '__main__':
     if bool(args['Real time market']):
         market = MO.Market('RT')
         market.output = int(output)
+        market.p_unit = int(plot_unit)
         input_Parse.read_structure(market, args['Real time market'])
         input_Parse.read_load(market, args['Load Profile'])
         market.Load_profile_flg = True

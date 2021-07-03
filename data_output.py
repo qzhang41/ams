@@ -4,9 +4,9 @@ import matplotlib.pyplot as plt
 
 def Out_to_CSV(market):
     type = market.Type
-    path = 'C:/Users/qzhang41/PycharmProjects/Pmarket/Results.xlsx'
-    writer = pd.ExcelWriter(path, engine='xlsxwriter')
     if type == 'ED':
+        path = 'C:/Users/qzhang41/PycharmProjects/Pmarket/Results_ED.xlsx'
+        writer = pd.ExcelWriter(path, engine='xlsxwriter')
         disp = np.transpose(np.matrix([market.genco[i].opt_pg for i in range(market.genco.__len__())]))
         frame_LMP = pd.DataFrame(np.transpose(market.LMP), columns=['LMP'])
         frame_LMP.to_excel(writer, header=True, sheet_name='LMP')
@@ -15,6 +15,8 @@ def Out_to_CSV(market):
         writer.save()
         writer.close()
     if type == 'UC':
+        path = 'C:/Users/qzhang41/PycharmProjects/Pmarket/Results_UC.xlsx'
+        writer = pd.ExcelWriter(path, engine='xlsxwriter')
         for i in range(market.genco.__len__()):
             if i == 0:
                 T_pg = np.matrix(market.genco[i].T_pg)
@@ -31,6 +33,7 @@ def Out_to_CSV(market):
         writer.save()
         writer.close()
 
+
 def Out_to_plot(market):
     type = market.Type
     if type == 'ED':
@@ -40,4 +43,19 @@ def Out_to_plot(market):
         plt.ylabel('LMP ($)')
         plt.xlabel('Bus')
         plt.title('LMP plot')
+        plt.show()
+    if type == 'UC':
+        x = list(range(market.N_T))
+        y1 = market.genco[market.p_unit].T_pg
+        y2 = market.genco[market.p_unit].T_status
+        plt.subplot(1,2,1)
+        plt.plot(x, y1, color='r', marker='o', linestyle='dashed')
+        plt.ylabel('Generation (MW)')
+        plt.xlabel('Time period')
+        plt.title('Dispatch')
+        plt.subplot(1,2,2)
+        plt.plot(x, y2, color='r', marker='o', linestyle='dashed')
+        plt.ylabel('Status (0/1)')
+        plt.xlabel('Time period')
+        plt.title('Unit Status')
         plt.show()

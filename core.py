@@ -240,7 +240,7 @@ def unit_commitment(market):
     opt_model.optimize()
     for idx, gen in enumerate(market.genco):
         for t in range(market.N_T):
-            gen.T_status.append(int(status[t, idx].x))
+            gen.T_status.append(round(status[t, idx].x))
             gen.T_pg.append(pg[t,idx].X)
     if market.output == 1:
         ot.Out_to_CSV(market)
