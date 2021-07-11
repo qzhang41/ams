@@ -1,5 +1,5 @@
 # Python based power market clearing model
-# Author: Qiwei Zhang
+# Author: Qiwei Zhang, Prof. Fangxing Li
 
 
 import argparse
@@ -79,11 +79,9 @@ if __name__ == '__main__':
     if bool(args['Real time market']):
         market = MO.Market('RT')
         market.output = int(output)
-        market.p_unit = int(plot_unit)
         input_Parse.read_structure(market, args['Real time market'])
         input_Parse.read_load(market, args['Load Profile'])
         market.Load_profile_flg = True
-        core.multi_ED(market)
         core.real_time(market)
 
     if bool(args['Dime']):

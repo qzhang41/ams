@@ -1,6 +1,7 @@
 import pandas as pd
 import numpy as np
 import matplotlib.pyplot as plt
+import random
 
 def Out_to_CSV(market):
     type = market.Type
@@ -32,7 +33,13 @@ def Out_to_CSV(market):
         frame_st.to_excel(writer, header=True, sheet_name='T_status')
         writer.save()
         writer.close()
-
+    if type == 'RT':
+        path = 'C:/Users/qzhang41/PycharmProjects/Pmarket/Results_RT.xlsx'
+        writer = pd.ExcelWriter(path, engine='xlsxwriter')
+        frame_LMP = pd.DataFrame(np.transpose(market.RT_LMP), columns=['LMP'])
+        frame_LMP.to_excel(writer, header=True, sheet_name='LMP')
+        writer.save()
+        writer.close()
 
 def Out_to_plot(market):
     type = market.Type
@@ -58,4 +65,21 @@ def Out_to_plot(market):
         plt.ylabel('Status (0/1)')
         plt.xlabel('Time period')
         plt.title('Unit Status')
+        plt.show()
+    if type == 'RT':
+        for i in range(market.N_T):
+            x = [0, 1, 2]
+            y = [0, 1, 2]
+            r = random.random()
+            b = random.random()
+            g = random.random()
+            color = (r, g, b)
+            y = np.matrix.tolist(market.RT_LMP[i])[0]
+            x = list(range(market.Nb))
+            x = [int(x[i]+1) for i in range(market.Nb)]
+            plt.plot(x, y, color=color, marker='o', linestyle='dashed', label='LMP at t'+str(i+1))
+        plt.ylabel('LMP ($)')
+        plt.xlabel('Bus')
+        plt.title('LMP plot')
+        plt.legend()
         plt.show()

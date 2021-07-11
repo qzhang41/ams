@@ -72,6 +72,8 @@ def ecnomic_dispatch(market):
     # LMP and dispatched settlements
     for i in range(market.genco.__len__()):
         market.genco[i].opt_pg = pg[i].X
+    for i in range(market.Line.__len__()):
+        market.Line[i].opt_fl = line_flow[i, 0].getValue()
     lamda = opt_model.getConstrByName('balance').Pi
     LMP = np.ones([1, market.Nb]) * lamda
     gama = np.matrix([(abs(neg_con[0][l].Pi)-abs(pos_con[0][l].Pi)) for l in range(market.Line.__len__())])
@@ -79,10 +81,11 @@ def ecnomic_dispatch(market):
     LMP = LMP + d_LMP
     market.LMP = LMP
     del opt_model
-    if market.output == 1:
-        ot.Out_to_CSV(market)
-    elif market.output == 2:
-        ot.Out_to_plot(market)
+    if market.Type == 'ED':
+        if market.output == 1:
+            ot.Out_to_CSV(market)
+        elif market.output == 2:
+            ot.Out_to_plot(market)
 
 def multi_ED(market):
     make_Bdc(market)
@@ -104,8 +107,8 @@ def multi_ED(market):
                 opt_model.addConstr(pg[idx] <= gen.pmax * gen.T_status[t], name='T_' + str(t) + 'Capacity_max' + str(idx))
                 opt_model.addConstr(pg[idx] >= gen.pmin * gen.T_status[t], name='T_' + str(t) + 'Capacity_min' + str(idx))
             if gen.bid_type == 2:
-                cost = gen.bids
-                obj += pg[idx] * cost
+                cost = gen.bids[0]
+                obj += pg[idx] * cost + gen.bids[1]
             elif gen.bid_type == 3:
                 cost = gen.bids
                 obj += (pg[idx] * pg[idx]) * cost[0] + pg[idx] * cost[1] + cost[2]
@@ -253,14 +256,16 @@ def real_time(market):
         for bus_idx in range(market.Nb):
             market.load[bus_idx].P = market.load[bus_idx].T_P[t]
         ecnomic_dispatch(market)
-        P_cog_list = []
-        N_cog_list = []
+        market.P_cog_list = []
+        market.N_cog_list = []
         for line_idx, line in enumerate(market.Line):
             if abs(line.opt_fl - line.rating) <= 0.00001:
-                P_cog_list.append(line_idx)
+                market.P_cog_list.append(line_idx)
             if abs(line.opt_fl+line.rating) <= 0.00001:
-                N_cog_list.append(line_idx)
+                market.N_cog_list.append(line_idx)
         db.ex_post_attack(market)
+        P_cog_list = market.P_cog_list
+        N_cog_list = market.N_cog_list
         d_pg_down = -2
         d_pg_up = 0.01
         opt_model = gb.Model(str(market.Type) + 'Ex_post_pricing')
@@ -275,8 +280,8 @@ def real_time(market):
             else:
                 pg[idx] = opt_model.addVar(name='Pg' + str(idx), vtype=gb.GRB.CONTINUOUS, lb=-gen.opt_pg, ub=d_pg_up)
             if gen.bid_type == 2:
-                cost = gen.bids
-                obj += pg[idx] * cost
+                cost = gen.bids[0]
+                obj += pg[idx] * cost + gen.bids[1]
             elif gen.bid_type == 3:
                 cost = gen.bids
                 obj += (pg[idx] * pg[idx]) * cost[0] + pg[idx] * cost[1] + cost[2]
@@ -317,21 +322,13 @@ def real_time(market):
                         LMP[0, b] += market.PTDF[l, b] * ng
             market.LMP = LMP
             market.RT_LMP.append(LMP)
-            for gen in market.genco:
-                gen.T_revenue.append(LMP[0, int(gen.bus-1)]*gen.T_pg[t])
-            for idx, ld in enumerate(market.load):
-                ld.T_revenue.append(-LMP[0, idx]*ld.P)
         else:
-            for idx, gen in enumerate(market.genco):
-                gen.T_pg.append([])
-                gen.T_revenue.append([])
-            for idx, line in enumerate(market.Line):
-                line.T_Lf.append([])
-            for idx, ld in enumerate(market.load):
-                ld.T_revenue.append([])
             market.RT_LMP.append([])
             market.LMP = []
         del opt_model
-
+    if market.output == 1:
+        ot.Out_to_CSV(market)
+    elif market.output == 2:
+        ot.Out_to_plot(market)
 
 
