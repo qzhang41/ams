@@ -21,6 +21,7 @@ if __name__ == '__main__':
     parser.add_argument('-OUT', '--output', help='to csv or plot')
     parser.add_argument('-PU', '--plot unit', help='plot unit')
     parser.add_argument('-DI', '--Dime', help='Send data to dime')
+    parser.add_argument('-ATT', '--Attack', help='Real-time attack')
     args = parser.parse_args()
     args = vars(args)
     # Bid/Post system
@@ -82,6 +83,9 @@ if __name__ == '__main__':
         input_Parse.read_structure(market, args['Real time market'])
         input_Parse.read_load(market, args['Load Profile'])
         market.Load_profile_flg = True
+        if bool(args['Real time market']):
+            market.attack = MO.Attack(market)
+            input_Parse.read_attack(market, args['Attack'])
         core.real_time(market)
 
     if bool(args['Dime']):

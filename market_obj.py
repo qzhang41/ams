@@ -1,3 +1,4 @@
+import numpy as np
 
 
 class Market:
@@ -27,6 +28,8 @@ class Market:
         self.RT_LMP = []
         self.output = 0
         self.p_unit = -1
+        self.disturb = False
+        self.attack = []
 
 class Bus:
     def __init__(self, market_type):
@@ -83,3 +86,12 @@ class Load:
         self.revenue = []
         self.T_P = []
         self.T_revenue = []
+
+class Attack:
+    def __init__(self, market):
+        self.Lr = []
+        self.Load = []
+        self.Cog_p = []
+        self.Cog_n = []
+        self.Bidding = []
+        self.t = -1

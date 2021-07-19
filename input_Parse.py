@@ -287,3 +287,67 @@ def read_xgd(market, file):
         gen.commit_key = CommitKey[idx]
         gen.min_dowm = MinDown[idx]
         gen.min_up = MinUp[idx]
+
+
+def read_attack(market, file):
+    fid = open(file, 'r')
+    Read_t = re.compile(r'\s*t\s*=\s*')
+    Read_lr = re.compile(r'\s*Line_rating\s*=\s*')
+    Read_load = re.compile(r'\s*Load\s*=\s*')
+    Read_cogp= re.compile(r'\s*Cog_p\s*=\s*')
+    Read_cogn = re.compile(r'\s*Cog_n\s*=\s*')
+    Read_b = re.compile(r'\s*Bidding\s*=\s*')
+    Title = " "
+    for line in fid:
+        line = line.strip().rstrip(';')
+        if Read_t.search(line):
+            market.attack.t = int(line.split('=')[1])
+    fid.close()
+    fid = open(file, 'r')
+    for line in fid:
+        line = line.strip().rstrip(';')
+        if line == "" or line == "\n":
+            continue
+        if Read_lr.search(line):
+            Title = "Line_rating"
+            count = 0
+            continue
+        if Read_load.search(line):
+            Title = "Load"
+            count = 0
+            continue
+        if Read_cogp.search(line):
+            Title = "Cog_p"
+            continue
+        if Read_cogn.search(line):
+            Title = "Cog_n"
+            continue
+        if Read_b.search(line):
+            Title = "Bidding"
+            count = 0
+            continue
+        if line.find(']') >= 0:
+            Title = " "
+        elif Title == "Line_rating":
+            lr_txt = line.split(' ')
+            value = [float(lr_txt[i]) for i in range(lr_txt.__len__())]
+            market.attack.Lr.append(value)
+            count += 1
+        elif Title == "Load":
+            lr_txt = line.split(' ')
+            value = [float(lr_txt[i]) for i in range(lr_txt.__len__())]
+            market.attack.Load.append(value)
+            count += 1
+        elif Title == "Bidding":
+            lr_txt = line.split(' ')
+            value = [float(lr_txt[i]) for i in range(lr_txt.__len__())]
+            market.attack.Bidding.append(value)
+            count += 1
+        elif Title == "Cog_p":
+            lr_txt = line.split(' ')
+            value = [float(lr_txt[i]) for i in range(lr_txt.__len__())]
+            market.attack.Cog_p.append(value)
+        elif Title == "Cog_n":
+            lr_txt = line.split(' ')
+            value = [float(lr_txt[i]) for i in range(lr_txt.__len__())]
+            market.attack.Cog_n.append(value)

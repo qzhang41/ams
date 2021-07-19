@@ -252,7 +252,8 @@ def unit_commitment(market):
 
 def real_time(market):
     for t in range(market.N_T):
-        db.ex_ante_attack(market)
+        if t == market.attack.t:
+            db.ex_ante_attack(market)
         for bus_idx in range(market.Nb):
             market.load[bus_idx].P = market.load[bus_idx].T_P[t]
         ecnomic_dispatch(market)
@@ -263,7 +264,8 @@ def real_time(market):
                 market.P_cog_list.append(line_idx)
             if abs(line.opt_fl+line.rating) <= 0.00001:
                 market.N_cog_list.append(line_idx)
-        db.ex_post_attack(market)
+        if t == market.attack.t:
+            db.ex_post_attack(market)
         P_cog_list = market.P_cog_list
         N_cog_list = market.N_cog_list
         d_pg_down = -2
