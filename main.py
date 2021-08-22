@@ -43,6 +43,7 @@ if __name__ == '__main__':
             core.multi_ED(market)
         else:
             core.ecnomic_dispatch(market)
+            core.CLL(market)
     if bool(args['Unit Commitment']):
         market = MO.Market('UC')
         market.output = int(output)
