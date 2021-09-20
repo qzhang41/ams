@@ -77,6 +77,7 @@ def ecnomic_dispatch(market):
     lamda = opt_model.getConstrByName('balance').Pi
     LMP = np.ones([1, market.Nb]) * lamda
     gama = np.matrix([(abs(neg_con[0][l].Pi)-abs(pos_con[0][l].Pi)) for l in range(market.Line.__len__())])
+    market.gama = gama.tolist()[0]
     d_LMP = gama * np.matrix(market.PTDF)
     LMP = LMP + d_LMP
     market.LMP = LMP
@@ -333,10 +334,20 @@ def real_time(market):
     elif market.output == 2:
         ot.Out_to_plot(market)
 
+def CLL_collector(market):
+    LMP_C = []
+    Next_load_increase = 10000
+    while Next_load_increase >= 1:
+        ecnomic_dispatch(market)
+        Next_load_increase = CLL(market)
+        patern_f = [market.load[i].P for i in range(market.Nb)]
+        patern_f = [patern_f[i] / sum(patern_f) for i in range(patern_f.__len__())]
+        for i in range(market.load.__len__()):
+            market.load[i].P += float(Next_load_increase) * patern_f[i]
+        LMP_C.append(market.LMP)
 
 def CLL(market):
     kc = 0.00001
-    ecnomic_dispatch(market)
     patern_f = [market.load[i].P for i in range(market.Nb)]
     patern_f = [patern_f[i]/sum(patern_f) for i in range(patern_f.__len__())]
     All_G = list(range(market.genco.__len__()))
@@ -346,7 +357,9 @@ def CLL(market):
         if market.genco[i].opt_pg == market.genco[i].pmax or market.genco[i].opt_pg == market.genco[i].pmin:
             NG.append(i)
     for i in range(market.Line.__len__()):
-        if -market.Line[i].rating + kc <= market.Line[i].opt_fl <= market.Line[i].rating - kc:
+        # if -market.Line[i].rating + kc <= market.Line[i].opt_fl <= market.Line[i].rating - kc:
+        #     UL.append(i)
+        if market.gama[i] == 0:
             UL.append(i)
     MG = list(set(All_G)-set(NG))
     CL = list(set(list(range(market.Nl))) - set(UL))
@@ -354,7 +367,7 @@ def CLL(market):
     A00 = np.ones([1, MG.__len__()])
     A01 = np.zeros([1, UL.__len__()])
     A11 = np.matrix([market.PTDF[i, MG_bus] for i in CL])
-    A12 = np.ones([CL.__len__(), UL.__len__()])
+    A12 = np.zeros([CL.__len__(), UL.__len__()])
     A21 = np.matrix([market.PTDF[i, MG_bus] for i in UL])
     A22 = np.identity(UL.__len__())
     A0 = np.concatenate((A00, A01), 1)
@@ -362,7 +375,7 @@ def CLL(market):
     A2 = np.concatenate((A21, A22), 1)
     A = np.concatenate((A0, A1), 0)
     A = np.concatenate((A, A2), 0)
-    q0 = np.zeros([1,market.Nb])
+    q0 = np.ones([1,market.Nb])
     q1 = np.matrix([market.PTDF[i, :] for i in CL])
     q2 = np.matrix([market.PTDF[i, :] for i in UL])
     q = np.concatenate((q0, q1), 0)
@@ -386,7 +399,4 @@ def CLL(market):
             load_inc.append(dis/abs(Q[idx]))
     Next_load_increase = min(load_inc)
     Next_binding = load_inc.index(Next_load_increase)
-    for i in range(market.load.__len__()):
-        market.load[i].P += Next_load_increase*patern_f[i]
-    ecnomic_dispatch(market)
-    a = 1
+    return Next_load_increase
