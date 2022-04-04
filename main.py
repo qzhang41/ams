@@ -43,7 +43,7 @@ if __name__ == '__main__':
             core.multi_ED(market)
         else:
             core.ecnomic_dispatch(market)
-            core.CLL_collector(market)
+            # core.CLL_collector(market)
     if bool(args['Unit Commitment']):
         market = MO.Market('UC')
         market.output = int(output)
@@ -84,9 +84,11 @@ if __name__ == '__main__':
         input_Parse.read_structure(market, args['Real time market'])
         input_Parse.read_load(market, args['Load Profile'])
         market.Load_profile_flg = True
-        if bool(args['Real time market']):
+        if bool(args['Attack']):
             market.attack = MO.Attack(market)
             input_Parse.read_attack(market, args['Attack'])
+        else:
+            market.attack = 0
         core.real_time(market)
 
     if bool(args['Dime']):

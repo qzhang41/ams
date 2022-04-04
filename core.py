@@ -2,6 +2,7 @@ import numpy as np
 import gurobipy as gb
 import Disturb as db
 import data_output as ot
+import multiprocessing
 
 
 def make_Bdc(market):
@@ -22,6 +23,10 @@ def make_Bdc(market):
     market.Bbus = Bbus
     market.Bf = Bf
     market.Cft = Cft
+
+# def cons_lineflow(market,):
+#     lineflow = np.dot(market.PTDF[i,:], np.matrix.transpose(G-np.matrix(L))) for i in range(market.Line.__len__())
+#     return lineflow
 
 
 def make_PTDF(market):
@@ -59,7 +64,12 @@ def ecnomic_dispatch(market):
             cost = gen.bids
             obj += (pg[idx] * pg[idx]) * cost[0] + pg[idx] * cost[1] + cost[2]
     # add line flow cons
-    line_flow = market.PTDF * np.matrix.transpose(G-np.matrix(L))
+    # line_flow = [np.dot(market.PTDF[i,:], np.matrix.transpose(G-np.matrix(L))) for i in range(market.Line.__len__())]
+    # G_L = np.matrix.transpose(G-np.matrix(L))
+    # line_flow = market.PTDF * G_L
+    G = np.matrix.transpose(np.matrix(G))
+    L = np.matrix.transpose(L)
+    line_flow = market.PTDF * (G-L)
     pos_con = [opt_model.addConstrs(line_flow[line_idx, 0] <= market.Line[line_idx].rating for line_idx in range(market.Line.__len__()))]
     neg_con = [opt_model.addConstrs(line_flow[line_idx, 0] >= -market.Line[line_idx].rating for line_idx in range(market.Line.__len__()))]
     opt_model.update()
@@ -253,8 +263,9 @@ def unit_commitment(market):
 
 def real_time(market):
     for t in range(market.N_T):
-        if t == market.attack.t:
-            db.ex_ante_attack(market)
+        if market.attack == 1:
+            if t == market.attack.t:
+                db.ex_ante_attack(market)
         for bus_idx in range(market.Nb):
             market.load[bus_idx].P = market.load[bus_idx].T_P[t]
         ecnomic_dispatch(market)
@@ -265,8 +276,9 @@ def real_time(market):
                 market.P_cog_list.append(line_idx)
             if abs(line.opt_fl+line.rating) <= 0.00001:
                 market.N_cog_list.append(line_idx)
-        if t == market.attack.t:
-            db.ex_post_attack(market)
+        if market.attack == 1:
+            if t == market.attack.t:
+                db.ex_post_attack(market)
         P_cog_list = market.P_cog_list
         N_cog_list = market.N_cog_list
         d_pg_down = -2
