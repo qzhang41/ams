@@ -101,11 +101,6 @@ def ecnomic_dispatch(market):
             ot.Out_to_plot(market)
 
 
-def task(A, G):
-    B = A * G
-    return B
-
-
 def multi_ED(market):
     make_Bdc(market)
     make_PTDF(market)
