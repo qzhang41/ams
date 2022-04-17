@@ -2,7 +2,8 @@ import numpy as np
 import gurobipy as gb
 import Disturb as db
 import data_output as ot
-import multiprocessing
+from multiprocessing import Pool
+import time
 
 
 def make_Bdc(market):
@@ -69,7 +70,8 @@ def ecnomic_dispatch(market):
     # line_flow = market.PTDF * G_L
     G = np.matrix.transpose(np.matrix(G))
     L = np.matrix.transpose(L)
-    line_flow = market.PTDF * (G-L)
+    G_L = G - L
+    line_flow = market.PTDF * G_L
     pos_con = [opt_model.addConstrs(line_flow[line_idx, 0] <= market.Line[line_idx].rating for line_idx in range(market.Line.__len__()))]
     neg_con = [opt_model.addConstrs(line_flow[line_idx, 0] >= -market.Line[line_idx].rating for line_idx in range(market.Line.__len__()))]
     opt_model.update()
@@ -97,6 +99,12 @@ def ecnomic_dispatch(market):
             ot.Out_to_CSV(market)
         elif market.output == 2:
             ot.Out_to_plot(market)
+
+
+def task(A, G):
+    B = A * G
+    return B
+
 
 def multi_ED(market):
     make_Bdc(market)
@@ -261,6 +269,7 @@ def unit_commitment(market):
     elif market.output == 2:
         ot.Out_to_plot(market)
 
+
 def real_time(market):
     for t in range(market.N_T):
         if market.attack == 1:
@@ -346,6 +355,7 @@ def real_time(market):
     elif market.output == 2:
         ot.Out_to_plot(market)
 
+
 def CLL_collector(market):
     LMP_C = []
     Next_load_increase = 10000
@@ -357,6 +367,7 @@ def CLL_collector(market):
         for i in range(market.load.__len__()):
             market.load[i].P += float(Next_load_increase) * patern_f[i]
         LMP_C.append(market.LMP)
+
 
 def CLL(market):
     kc = 0.00001
