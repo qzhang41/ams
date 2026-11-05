@@ -1,6 +1,5 @@
 import numpy as np
 import gurobipy as gb
-import Disturb as db
 import data_output as ot
 from multiprocessing import Pool
 import time
@@ -47,60 +46,49 @@ def make_PTDF(market):
 def ecnomic_dispatch(market):
     make_Bdc(market)
     make_PTDF(market)
-    opt_model = gb.Model(str(market.Type) + 'Ecnomic_dispatch')
-    pg = {}
-    load_level = 0
-    G = np.ndarray.astype(np.zeros([1, market.Nb]), object)
-    L = np.array([market.load[idx].P for idx in range(market.Nb)])
-    obj = 0
-    # add pg cap
-    for idx, gen in enumerate(market.genco):
-        pg[idx] = opt_model.addVar(name='Power generation' + str(idx), vtype=gb.GRB.CONTINUOUS,
-                                   ub=gen.pmax * gen.status, lb=gen.pmin * gen.status)
-        opt_model.update()
-        G[0, gen.bus-1] = G[0, gen.bus-1] + pg[idx]
-        if gen.bid_type == 2:
-            cost = gen.bids[0]
-            obj += pg[idx] * cost + gen.bids[1]
-        elif gen.bid_type == 3:
-            cost = gen.bids
-            obj += (pg[idx] * pg[idx]) * cost[0] + pg[idx] * cost[1] + cost[2]
-    # add line flow cons
-    # line_flow = [np.dot(market.PTDF[i,:], np.matrix.transpose(G-np.matrix(L))) for i in range(market.Line.__len__())]
-    # G_L = np.matrix.transpose(G-np.matrix(L))
-    # line_flow = market.PTDF * G_L
-    # net injection expression per bus as an Nb x 1 column (np.matrix.transpose on a 1-D load array was a no-op,
-    # so G - L broadcast to Nb x Nb and the line-flow constraints only saw the load of bus 1)
-    G_L = np.matrix.transpose(np.matrix(G) - np.matrix(L))
-    line_flow = market.PTDF * G_L
-    pos_con = [opt_model.addConstrs(line_flow[line_idx, 0] <= market.Line[line_idx].rating for line_idx in range(market.Line.__len__()))]
-    neg_con = [opt_model.addConstrs(line_flow[line_idx, 0] >= -market.Line[line_idx].rating for line_idx in range(market.Line.__len__()))]
-    opt_model.update()
-    # add power balance
-    load_level = sum([np.sum(market.load[i].P) for i in range(market.load.__len__())])
-    gen_level = sum([np.sum(pg[i]) for i in range(market.Ng)])
-    opt_model.addConstr(gen_level == load_level, name="balance")
-    opt_model.setObjective(obj, gb.GRB.MINIMIZE)
-    opt_model.optimize()
-    # LMP and dispatched settlements
-    for i in range(market.genco.__len__()):
-        market.genco[i].opt_pg = pg[i].X
-    for i in range(market.Line.__len__()):
-        market.Line[i].opt_fl = line_flow[i, 0].getValue()
-    lamda = opt_model.getConstrByName('balance').Pi
-    LMP = np.ones([1, market.Nb]) * lamda
-    gama = np.matrix([(abs(neg_con[0][l].Pi)-abs(pos_con[0][l].Pi)) for l in range(market.Line.__len__())])
-    market.gama = gama.tolist()[0]
-    d_LMP = gama * np.matrix(market.PTDF)
-    LMP = LMP + d_LMP
-    market.LMP = LMP
-    del opt_model
+    Nb, Nl = market.Nb, market.Nl
+    PTDF = market.PTDF
+    model = gb.Model(str(market.Type) + '_economic_dispatch')
+    pg = [model.addVar(lb=gen.pmin * gen.status, ub=gen.pmax * gen.status, name='pg_%d' % g)
+          for g, gen in enumerate(market.genco)]
+    cost = 0
+    for gen, p in zip(market.genco, pg):
+        if gen.bid_type == 2:        # linear bid:     b1 * pg + b0
+            cost += gen.bids[0] * p + gen.bids[1]
+        elif gen.bid_type == 3:      # quadratic bid:  c2 * pg^2 + c1 * pg + c0
+            cost += gen.bids[0] * p * p + gen.bids[1] * p + gen.bids[2]
+    model.setObjective(cost, gb.GRB.MINIMIZE)
+
+    load = np.array([market.load[b].P for b in range(Nb)])
+    injection = [gb.LinExpr(-load[b]) for b in range(Nb)]
+    for gen, p in zip(market.genco, pg):
+        injection[gen.bus - 1] += p
+
+    flow = [gb.quicksum(float(PTDF[l, b]) * injection[b] for b in range(Nb)) for l in range(Nl)]
+    flow_max = model.addConstrs((flow[l] <= market.Line[l].rating for l in range(Nl)), name='flow_max')
+    flow_min = model.addConstrs((flow[l] >= -market.Line[l].rating for l in range(Nl)), name='flow_min')
+
+    # ---- system power balance (lossless DC model) ----
+    balance = model.addConstr(gb.quicksum(pg) == load.sum(), name='balance')
+
+    model.write(model.ModelName + '.lp')   # save the full model as a readable LP file in the working folder
+    model.optimize()
+
+    for gen, p in zip(market.genco, pg):
+        gen.opt_pg = p.X
+    for l, line in enumerate(market.Line):
+        line.opt_fl = flow[l].getValue()
+
+    energy_price = balance.Pi
+    congestion_price = np.array([flow_max[l].Pi + flow_min[l].Pi for l in range(Nl)])
+    market.gama = congestion_price.tolist()
+    market.LMP = (energy_price + congestion_price @ PTDF).reshape(1, Nb)
+
     if market.Type == 'ED':
         if market.output == 1:
             ot.Out_to_CSV(market)
         elif market.output == 2:
             ot.Out_to_plot(market)
-
 
 def multi_ED(market):
     make_Bdc(market)
