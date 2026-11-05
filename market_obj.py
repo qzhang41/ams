@@ -49,6 +49,7 @@ class Line:
         self.r = 0
         self.x = 0
         self.b = 0
+        self.ratio = 1.0
         self.opt_fl = 0
         self.T_Lf = []
 

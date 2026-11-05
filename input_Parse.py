@@ -186,6 +186,7 @@ def read_structure(market, file):
         line.r = data[2]
         line.x = data[3]
         line.b = data[4]
+        line.ratio = data[8] if data[8] != 0 else 1.0   # transformer tap ratio (MATPOWER: 0 means 1)
         if data[5] == 0:
             line.rating = 1000000000
         else:

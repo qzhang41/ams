@@ -16,8 +16,9 @@ def make_Bdc(market):
     Lines = market.Line
     for idx, l in enumerate(Lines):
         status = l.status
-        Bf[idx, int(l.fbus - 1)] = status / l.x
-        Bf[idx, int(l.tbus - 1)] = -status / l.x
+        # MATPOWER DC branch susceptance: 1/(x*tap); tap ratio = 1 for lines (ratio 0 in the case file)
+        Bf[idx, int(l.fbus - 1)] = status / (l.x * l.ratio)
+        Bf[idx, int(l.tbus - 1)] = -status / (l.x * l.ratio)
         Cft[idx, int(l.fbus - 1)] = 1
         Cft[idx, int(l.tbus - 1)] = -1
     Bbus = np.matmul(np.transpose(Cft), Bf)
@@ -68,9 +69,9 @@ def ecnomic_dispatch(market):
     # line_flow = [np.dot(market.PTDF[i,:], np.matrix.transpose(G-np.matrix(L))) for i in range(market.Line.__len__())]
     # G_L = np.matrix.transpose(G-np.matrix(L))
     # line_flow = market.PTDF * G_L
-    G = np.matrix.transpose(np.matrix(G))
-    L = np.matrix.transpose(L)
-    G_L = G - L
+    # net injection expression per bus as an Nb x 1 column (np.matrix.transpose on a 1-D load array was a no-op,
+    # so G - L broadcast to Nb x Nb and the line-flow constraints only saw the load of bus 1)
+    G_L = np.matrix.transpose(np.matrix(G) - np.matrix(L))
     line_flow = market.PTDF * G_L
     pos_con = [opt_model.addConstrs(line_flow[line_idx, 0] <= market.Line[line_idx].rating for line_idx in range(market.Line.__len__()))]
     neg_con = [opt_model.addConstrs(line_flow[line_idx, 0] >= -market.Line[line_idx].rating for line_idx in range(market.Line.__len__()))]
@@ -156,7 +157,8 @@ def multi_ED(market):
                 for l, line in enumerate(market.Line):
                     ng = opt_model.getConstrByName('TC n' + str(l)).Pi
                     po = opt_model.getConstrByName('TC p' + str(l)).Pi
-                    LMP[0, b] += market.PTDF[l, b]*(ng-po)
+                    # Gurobi Pi = d(obj)/d(RHS): po <= 0 on 'flow <= rating', ng >= 0 on 'flow >= -rating' (min problem)
+                    LMP[0, b] += market.PTDF[l, b]*(ng+po)
             market.LMP = LMP
             market.T_LMP.append(LMP)
             for gen in market.genco:
@@ -335,7 +337,7 @@ def real_time(market):
                 for l, line in enumerate(market.Line):
                     if l in P_cog_list:
                         po = opt_model.getConstrByName('TC p' + str(l)).Pi
-                        LMP[0, b] += market.PTDF[l, b] * (-po)
+                        LMP[0, b] += market.PTDF[l, b] * po   # po <= 0 (Gurobi Pi of a '<=' constraint in a min problem)
                     if l in N_cog_list:
                         ng = opt_model.getConstrByName('TC n' + str(l)).Pi
                         LMP[0, b] += market.PTDF[l, b] * ng
